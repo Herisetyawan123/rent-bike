@@ -16,6 +16,7 @@ class BussinessSettingSeeder extends Seeder
         $settings = [
             ['setting_key' => 'app_margin', 'setting_value' => '10'],
             ['setting_key' => 'app_margin_type', 'setting_value' => 'percentage'], // atau 'flat'
+            ['setting_key' => 'app_tax', 'setting_value' => '11'],
             ['setting_key' => 'app_name', 'setting_value' => 'My Rental App'],
             ['setting_key' => 'app_email', 'setting_value' => 'admin@myapp.com'],
             ['setting_key' => 'app_contact', 'setting_value' => '081234567890'],
