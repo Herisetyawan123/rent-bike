@@ -27,6 +27,11 @@ class RentPaymentResource extends Resource
     protected static ?string $navigationGroup = 'Transaction Management';
     protected static ?string $navigationIcon = 'heroicon-o-scale';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+    
     public static function form(Form $form): Form
     {
         return $form

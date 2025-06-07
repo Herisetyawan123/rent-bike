@@ -23,6 +23,8 @@ class CreateRenter extends CreateRecord
             ]);
 
             $data['user_id'] = $user->id;
+
+            $user->assignRole('renter');
             unset($data['email']);
             unset($data['password']);
             unset($data['name']);
