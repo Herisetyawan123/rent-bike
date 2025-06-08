@@ -28,12 +28,7 @@ class RenterResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'User Management';
 
-        protected static ?string $navigationLabel = 'Renter';
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return auth()->user()?->hasRole('admin');
-    }
+    protected static ?string $navigationLabel = 'Renter';
     
     public static function form(Form $form): Form
     {
@@ -52,29 +47,31 @@ class RenterResource extends Resource
                             ->required(fn ($record) => ! $record)
                             ->label('Password'),
                     ]),
+
+
                 Section::make('Renter Details')
                     ->schema([
-                        TextInput::make('renter.national_id')->label('NIK / Passport'),
-                        TextInput::make('renter.driver_license_number')->label('Driver License Number'),
-                        Select::make('renter.gender')
+                        TextInput::make('national_id')->label('NIK / Passport'),
+                        TextInput::make('driver_license_number')->label('Driver License Number'),
+                        Select::make('gender')
                             ->options([
                                 'male' => 'Male',
                                 'female' => 'Female',
                                 'other' => 'Other',
                             ]),
-                        TextInput::make('renter.ethnicity')->label('Ethnicity'),
-                        TextInput::make('renter.nationality')->label('Nationality'),
-                        DatePicker::make('renter.birth_date')->label('Birth Date'),
-                        Textarea::make('renter.address')->label('Address'),
-                        Textarea::make('renter.current_address')->label('Current Address'),
-                        Select::make('renter.marital_status')
+                        TextInput::make('ethnicity')->label('Ethnicity'),
+                        TextInput::make('nationality')->label('Nationality'),
+                        DatePicker::make('birth_date')->label('Birth Date'),
+                        Textarea::make('address')->label('Address'),
+                        Textarea::make('current_address')->label('Current Address'),
+                        Select::make('marital_status')
                             ->options([
                                 'single' => 'Single',
                                 'married' => 'Married',
                                 'divorced' => 'Divorced',
                                 'widowed' => 'Widowed',
                             ]),
-                        TextInput::make('renter.phone')->label('Phone'),
+                        TextInput::make('phone')->label('Phone'),
                     ]),
             ]);
     }

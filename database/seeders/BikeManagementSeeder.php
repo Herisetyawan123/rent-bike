@@ -46,7 +46,7 @@ class BikeManagementSeeder extends Seeder
         $bike_type = [
                [
                 'bike_merk_id' => $merk->id,
-                'name' => 'Beet',
+                'name' => 'Beat',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

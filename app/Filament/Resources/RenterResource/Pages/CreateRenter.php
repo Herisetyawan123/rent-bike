@@ -32,6 +32,7 @@ class CreateRenter extends CreateRecord
             unset($data['password']);
         }
 
+        logger()->info('Data to create renter:', $data);
         return $data;
     }
 

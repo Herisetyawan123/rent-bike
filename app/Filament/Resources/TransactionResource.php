@@ -3,21 +3,26 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransactionResource\Pages;
-use App\Filament\Resources\TransactionResource\RelationManagers;
+use App\Models\ContractLatter;
 use App\Models\Transaction;
-use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Smalot\PdfParser\Parser;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use DateTime;
+use Filament\Tables\Actions\Action;
 
 class TransactionResource extends Resource
 {
@@ -31,12 +36,13 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('rent_bike_id')
+                Select::make('bike_id')
                     ->label('Bike')
                     ->options(function () {
                         return \App\Models\Bike::with('bikeMerk', 'bikeType')
                             ->where('user_id', Auth::id())
                             ->where('status', 'accepted')
+                            ->where('availability_status', 'available')
                             ->get()
                             ->mapWithKeys(function ($bike) {
                                 return [$bike->id => $bike->bikeMerk->name . ' - ' . $bike->bikeType->name. ' '. $bike->bikeCapacity->capacity . 'cc - ' . $bike->bikeColor->color];
@@ -67,10 +73,10 @@ class TransactionResource extends Resource
                     ->label('End Date')
                     ->disabled(), // kita hitung otomatis di backend
 
-                TextInput::make('total_tax')
-                    ->label('Total Tax')
-                    ->numeric()
-                    ->default(0),
+                // TextInput::make('total_tax')
+                //     ->label('Total Tax')
+                //     ->numeric()
+                //     ->default(0),
 
                 Select::make('status')
                     ->label('Status')
@@ -148,7 +154,51 @@ class TransactionResource extends Resource
                 TextColumn::make('final_total')
                     ->money('IDR') // Ubah 'IDR' ke 'USD', 'SGD', dll sesuai kebutuhan
                     ->label('Total'),
+            ])
+            ->actions([
+                self::generateContractAction(),
             ]);
+    }
+
+    protected static function generateContractAction(): Action
+    {
+        return Action::make('generate_contract')
+            ->label('Generate Contract PDF')
+            ->action(function (Transaction $record) {
+                $vendor = Auth::user();
+                $template = ContractLatter::where('vendor_id', $vendor->id)->first();
+
+                $parser = new Parser();
+                $text = $parser->parseFile(storage_path("app/public/{$template->file_path}"))->getText();
+
+
+                $start = Carbon::parse($record->start_date);
+                $end = Carbon::parse($record->end_date);
+
+                $jumlahHari = $start->diffInDays($end);
+
+                $replaced = str_replace(
+                    ['[Nama]', '[Alamat]','[NamaVendor]', '[AlamatVendor]', '[Tanggal]', '[Biaya]', '[JenisSepeda]', '[Durasi]'],
+                    [$record->customer->name, $record->customer->renter->address,$record->vendor->name, $record->vendor->vendor->business_address, now()->format('d-m-Y'), $record->final_total, $record->bike->bikeMerk->name, $jumlahHari],
+                    $text
+                );
+
+                $html = "<pre style='font-family: sans-serif; white-space: pre-wrap;'>$replaced</pre>";
+
+                $pdf = Pdf::loadHTML($html);
+                $generatedPath = 'contracts/generated_' . time() . '.pdf';
+
+                // Simpan ke public disk
+                Storage::disk('public')->put($generatedPath, $pdf->output());
+
+                Notification::make()
+                    ->success()
+                    ->title('Contract Generated')
+                    ->body('Kontrak berhasil digenerate. Silakan unduh file.');
+
+                return response()->download(storage_path("app/public/$generatedPath"));
+            });
+
     }
 
     public static function getEloquentQuery(): Builder

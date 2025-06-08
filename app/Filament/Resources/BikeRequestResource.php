@@ -109,7 +109,6 @@ class BikeRequestResource extends Resource
                     ->size(50),
                 TextColumn::make('bikeType.name')->label('Bike Type')->sortable()->searchable(),
                 TextColumn::make('bikeMerk.name')->label('Bike Merk')->sortable()->searchable(),
-                TextColumn::make('vendor.name')->label('Requester')->sortable()->searchable(),
                 TextColumn::make('status')->label('Status')->sortable(),
                 BadgeColumn::make('status')
                     ->colors([
@@ -137,7 +136,10 @@ class BikeRequestResource extends Resource
                     })
                     ->modalHeading('Edit Status')
                     ->icon('heroicon-o-pencil')
-                    ->color('primary'),
+                    ->color('primary')
+                    ->visible(function () {
+                        return Auth::user()->hasRole('admin');
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

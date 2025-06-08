@@ -59,7 +59,7 @@ class ContractLatterResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                self::generateContractAction(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

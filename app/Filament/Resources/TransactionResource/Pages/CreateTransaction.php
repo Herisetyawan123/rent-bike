@@ -13,14 +13,18 @@ class CreateTransaction extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $bike = \App\Models\RentBike::find($data['rent_bike_id']);
+        $bike = \App\Models\Bike::find($data['bike_id']);
+        $bike->availability_status = 'rented';
+        $bike->save();
         $startDate = \Carbon\Carbon::parse($data['start_date']);
         $rentalDays = $data['rental_days'];
         $deliveryFee = $data['delivery_fee'] ?? 0;
-        $totalTax = $data['total_tax'] ?? 0;
+        // $totalTax = $data['total_tax'] ?? 0
+        
+        $totalTax = getSetting('app_tax');
 
         $endDate = $startDate->addDays((int) $rentalDays);
-        $finalTotal = ($bike->rental_price_per_day * $rentalDays) + $deliveryFee + $totalTax;
+        $finalTotal = (($bike->price * $rentalDays) + $deliveryFee) * ((100 - floatval($totalTax)) / 100);
 
         $data['end_date'] = $endDate;
         $data['final_total'] = $finalTotal;

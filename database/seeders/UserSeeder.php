@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Renter;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Vendor;
@@ -22,7 +23,7 @@ class UserSeeder extends Seeder
 
         // Buat admin
         $admin = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@mail.com'],
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('password'), // ganti password di production
@@ -32,7 +33,7 @@ class UserSeeder extends Seeder
 
         // Buat vendor
         $vendor = User::firstOrCreate(
-            ['email' => 'vendor@example.com'],
+            ['email' => 'vendor@mail.com'],
             [
                 'name' => 'Vendor Motor',
                 'password' => Hash::make('password'),
@@ -49,6 +50,30 @@ class UserSeeder extends Seeder
         ]);
         $vendor->assignRole($vendorRole);
 
+
+        $user = User::create([
+            'name' => 'Rina Putri',
+            'email' => 'renter@mail.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        // Assign role kalau pakai Spatie
+        $user->assignRole('renter');
+
+        // Buat data renter
+        Renter::create([
+            'user_id' => $user->id,
+            'national_id' => '1234567890123456',
+            'driver_license_number' => 'B1234XYZ',
+            'gender' => 'female',
+            'ethnicity' => 'Javanese',
+            'nationality' => 'Indonesia',
+            'birth_date' => '1995-04-10',
+            'address' => 'Jalan Merdeka No. 10, Surabaya',
+            'current_address' => 'Kost Putri Indah, Surabaya',
+            'marital_status' => 'single',
+            'phone' => '081234567890',
+        ]);
         $this->command->info('Admin dan Vendor berhasil dibuat.');
     }
 }
