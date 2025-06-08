@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             BussinessSettingSeeder::class,
+            BikeManagementSeeder::class,
+            AddonSeeder::class,
         ]);
     }
 }

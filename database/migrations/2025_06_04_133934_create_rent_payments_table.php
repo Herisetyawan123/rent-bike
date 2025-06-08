@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rent_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('renter_id')->constrained()->cascadeOnDelete();  // penyewa
-            $table->foreignId('rent_bike_id')->constrained()->cascadeOnDelete(); // motor yang disewa
+            $table->foreignId('bike_id')->constrained()->cascadeOnDelete(); // motor yang disewa
             $table->foreignId('vendor_id')->constrained()->cascadeOnDelete(); // vendor pemilik motor
             $table->foreignId('package_id')->nullable()->constrained('bike_packages')->nullOnDelete(); // paket sewa, optional
             $table->date('rent_start_date');

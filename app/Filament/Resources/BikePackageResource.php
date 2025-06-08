@@ -28,13 +28,18 @@ class BikePackageResource extends Resource
 
     protected static ?string $navigationLabel = 'Bike Packages';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('rent_bike_id')
                 ->options(function () {
-                    return \App\Models\RentBike::all()->pluck('brand', 'id');
+                    return \App\Models\Bike::all()->pluck('brand', 'id');
                 })
                 ->label('Bike')
                 ->searchable()

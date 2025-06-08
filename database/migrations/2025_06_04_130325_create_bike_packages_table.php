@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bike_packages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rent_bike_id')->constrained()->onDelete('cascade');
+            $table->foreignId('bike_id')->constrained()->onDelete('cascade');
             $table->foreignId('unit_id')->constrained()->onDelete('cascade');
             $table->integer('duration'); // contoh: 7 hari
             $table->decimal('price', 10, 2);

@@ -3,26 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RentBikeResource\Pages;
-use App\Filament\Resources\RentBikeResource\RelationManagers;
-use App\Models\RentBike;
-use Filament\Forms;
+use App\Models\Bike;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class RentBikeResource extends Resource
 {
-    protected static ?string $model = RentBike::class;
+    protected static ?string $model = Bike::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Bike Management';
@@ -33,13 +32,29 @@ class RentBikeResource extends Resource
     {
         return $form->schema([
 
-            TextInput::make('brand')
-                ->required()
-                ->maxLength(255),
+            // Merk
+            Select::make('bike_merk_id')
+                ->label('Bike Merk')
+                ->relationship('bikeMerk', 'name')
+                ->required(),
 
-            TextInput::make('model')
-                ->required()
-                ->maxLength(255),
+            // Type
+            Select::make('bike_type_id')
+                ->label('Bike Type')
+                ->relationship('bikeType', 'name')
+                ->required(),
+
+            // Color
+            Select::make('bike_color_id')
+                ->label('Bike Color')
+                ->relationship('bikeColor', 'color')
+                ->required(),
+
+            // Capacity
+            Select::make('bike_capacity_id')
+                ->label('Bike Capacity')
+                ->relationship('bikeCapacity', 'capacity')
+                ->required(),
 
             TextInput::make('year')
                 ->label('Year')
@@ -52,10 +67,7 @@ class RentBikeResource extends Resource
                 ->required()
                 ->unique(ignoreRecord: true),
 
-            TextInput::make('color')
-                ->maxLength(50),
-
-            TextInput::make('rental_price_per_day')
+            TextInput::make('price')
                 ->label('Rental Price Per Day')
                 ->required()
                 ->numeric(),
@@ -68,6 +80,16 @@ class RentBikeResource extends Resource
                 ])
                 ->required(),
 
+
+
+            CheckboxList::make('addOns')
+                ->label('Add-ons')
+                ->relationship('addOns', 'name')
+                ->columns(2),
+
+            Textarea::make('description')
+                    ->label('Description'),
+
             FileUpload::make('photo')
                 ->image()
                 ->directory('rent-bike-photos')
@@ -79,23 +101,70 @@ class RentBikeResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('brand')->sortable()->searchable(),
-                TextColumn::make('model')->sortable()->searchable(),
-                TextColumn::make('year')->sortable(),
-                TextColumn::make('license_plate')->sortable()->searchable(),
-                TextColumn::make('color'),
-                TextColumn::make('rental_price_per_day')->money('usd', true),
+                ImageColumn::make('photo')
+                    ->label('Photo')
+                    ->size(50),
+                TextColumn::make('bikeMerk.name')->label('Merk'),
+                TextColumn::make('bikeType.name')->label('Type'),
+                TextColumn::make('bikeColor.color')->label('Color'),
+                TextColumn::make('bikeCapacity.capacity')->label('Capacity'),
+                TextColumn::make('year'),
+                TextColumn::make('license_plate'),
+                TextColumn::make('price')->money('usd', true),
+                BadgeColumn::make('status')
+                    ->colors([
+                        'primary',
+                        'success' => 'accepted',
+                        'danger' => 'requested',
+                    ]),
                 BadgeColumn::make('availability_status')
                     ->colors([
+                        'primary',
                         'success' => 'available',
-                        'danger' => 'rented',
+                        'warning' => 'rented',
                     ]),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('addOns.name')
+                    ->label('Add-ons')
+                    ->wrap()
+                    ->limit(50)
+                    ->sortable(false),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('editStatus')
+                    ->label('Edit Status')
+                    ->form([
+                        Select::make('status')
+                            ->options([
+                                'requested' => 'Requested',
+                                'accepted' => 'Accepted',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update($data);
+                    })
+                    ->modalHeading('Edit Status')
+                    ->icon('heroicon-o-pencil')
+                    ->color('primary'),
+                Tables\Actions\Action::make('editStatusAvaibility')
+                    ->label('Edit Status Avaible')
+                    ->form([
+                        Select::make('availability_status')
+                            ->options([
+                                'available' => 'Available',
+                                'rented' => 'Rented',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update($data);
+                    })
+                    ->modalHeading('Edit Status')
+                    ->icon('heroicon-o-pencil')
+                    ->color('primary'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

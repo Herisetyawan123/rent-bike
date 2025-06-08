@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AddOnResource\Pages;
-use App\Filament\Resources\AddOnResource\RelationManagers;
-use App\Models\AddOn;
+use App\Filament\Resources\BikeTypeResource\Pages;
+use App\Filament\Resources\BikeTypeResource\RelationManagers;
+use App\Models\BikeType;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,27 +16,26 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AddOnResource extends Resource
+class BikeTypeResource extends Resource
 {
-    protected static ?string $model = AddOn::class;
+    protected static ?string $model = BikeType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Bike Management';
-
-    protected static ?string $navigationLabel = 'Add On For Bike';
+    protected static ?string $navigationLabel = 'Bike Types';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Select::make('bike_merk_id')
+                    ->label('Merk')
+                    ->relationship('merk', 'name')
+                    ->required(),
                 TextInput::make('name')
-                    ->required()
-                    ->label('Add On Name'),
-                TextInput::make('price')
-                    ->required()
-                    ->label('Price')
-                    ->numeric(),
+                    ->label('Type')
+                    ->required(),
             ]);
     }
 
@@ -43,13 +43,16 @@ class AddOnResource extends Resource
     {
         return $table
             ->columns([
-               TextColumn::make('name')
-                ->label('Name'),
-                TextColumn::make('price')
-                ->label('Price'),
+                TextColumn::make('name')
+                    ->label('Bike Merk Type'),
+                TextColumn::make('merk.name')
+                    ->label('Bike Merk'),
+                TextColumn::make('bikes_count')
+                    ->label('Number of Bikes')
+                    ->counts('bikes'),
             ])
             ->filters([
-                
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -62,6 +65,12 @@ class AddOnResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withCount('bikes');
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -72,9 +81,9 @@ class AddOnResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAddOns::route('/'),
-            'create' => Pages\CreateAddOn::route('/create'),
-            'edit' => Pages\EditAddOn::route('/{record}/edit'),
+            'index' => Pages\ListBikeTypes::route('/'),
+            'create' => Pages\CreateBikeType::route('/create'),
+            'edit' => Pages\EditBikeType::route('/{record}/edit'),
         ];
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rent_bike_id')->references('id')->on('rent_bikes')->cascadeOnDelete();
+            $table->foreignId('bike_id')->references('id')->on('bikes')->cascadeOnDelete();
             $table->foreignId('customer_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('vendor_id')->references('id')->on('users')->cascadeOnDelete();
             $table->dateTime('start_date');

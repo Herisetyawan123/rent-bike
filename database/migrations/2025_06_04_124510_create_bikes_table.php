@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rent_bikes', function (Blueprint $table) {
+        Schema::create('bikes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('brand');
-            $table->string('model');
+            $table->foreignId('bike_merk_id')->references('id')->on('bike_merks')->onDelete('cascade');
+            $table->foreignId('bike_type_id')->references('id')->on('bike_types')->onDelete(action: 'cascade');
+            $table->foreignId('bike_color_id')->references('id')->on('bike_colors')->onDelete('cascade');
+            $table->foreignId('bike_capacity_id')->references('id')->on('bike_capacities')->onDelete('cascade');
             $table->year('year');
             $table->string('license_plate')->unique();
-            $table->string('color')->nullable();
-            $table->decimal('rental_price_per_day', 10, 2);
+            $table->decimal('price', 10, 2);
             $table->enum('availability_status', ['available', 'rented'])->default('available');
+            $table->enum('status', ['requested', 'accepted'])->default('requested');
             $table->string('photo')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
