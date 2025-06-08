@@ -34,8 +34,8 @@ class CreateTransaction extends CreateRecord
         }else{
             $finalTotal += $margin;
         }
-
-        $finalTotal = $finalTotal + ((100 + $totalTax) / 100);
+        $totalTxAmount = $finalTotal * ($totalTax / 100);
+        $finalTotal = $finalTotal + $totalTxAmount;
 
         $data['end_date'] = $endDate;
         $data['final_total'] = $finalTotal;

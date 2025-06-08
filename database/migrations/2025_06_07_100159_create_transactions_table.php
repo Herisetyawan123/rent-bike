@@ -18,10 +18,10 @@ return new class extends Migration
             $table->foreignId('vendor_id')->references('id')->on('users')->cascadeOnDelete();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->decimal('paid_total')->nullable();
-            $table->decimal('final_total')->default(0);
-            $table->decimal('total')->default(0);
-            $table->decimal('total_tax')->default(0);
+            $table->decimal('final_total', 15, 2)->default(0);
+            $table->decimal('paid_total', 15, 2)->nullable();
+            $table->decimal('total', 15, 2)->default(0);
+            $table->decimal('total_tax', 15, 2)->default(0);
             $table->enum('status', [    
                 'payment_pending',
                 'paid',
