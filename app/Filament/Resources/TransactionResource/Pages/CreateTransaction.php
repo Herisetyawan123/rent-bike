@@ -24,7 +24,7 @@ class CreateTransaction extends CreateRecord
         $totalTax = getSetting('app_tax');
 
         $endDate = $startDate->addDays((int) $rentalDays);
-        $finalTotal = (($bike->price * $rentalDays) + $deliveryFee) * ((100 - floatval($totalTax)) / 100);
+        $finalTotal = (($bike->price * $rentalDays) + $deliveryFee) * ((100 + floatval($totalTax)) / 100);
 
         $data['end_date'] = $endDate;
         $data['final_total'] = $finalTotal;
