@@ -22,9 +22,20 @@ class CreateTransaction extends CreateRecord
         // $totalTax = $data['total_tax'] ?? 0
         
         $totalTax = getSetting('app_tax');
+        $margin = getSetting('app_margin');
+        $marginType = getSetting('app_margin');
 
         $endDate = $startDate->addDays((int) $rentalDays);
-        $finalTotal = (($bike->price * $rentalDays) + $deliveryFee) * ((100 + floatval($totalTax)) / 100);
+        $finalTotal = (($bike->price * $rentalDays) + $deliveryFee);
+
+        if($marginType == "percentage")
+        {
+            $finalTotal = $finalTotal * ((100 + floatval($margin)) / 100);
+        }else{
+            $finalTotal += $margin;
+        }
+
+        $finalTotal = $finalTotal + ((100 + $totalTax) / 100);
 
         $data['end_date'] = $endDate;
         $data['final_total'] = $finalTotal;
