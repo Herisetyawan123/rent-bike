@@ -157,7 +157,7 @@ class BikeRequestResource extends Resource
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            return parent::getEloquentQuery();
+            return parent::getEloquentQuery()->where('status', 'requested');
         }
 
         return parent::getEloquentQuery()->where('user_id', $user->id)->where('status', 'requested');
