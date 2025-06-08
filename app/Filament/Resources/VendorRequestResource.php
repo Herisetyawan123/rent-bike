@@ -56,6 +56,13 @@ class VendorRequestResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereHas('user', function ($query) {
+            return $query->where('is_requested', true);
+        });
+    }
+
     public static function getRelations(): array
     {
         return [
