@@ -7,7 +7,11 @@ use App\Filament\Resources\BikeRequestResource\RelationManagers;
 use App\Models\Bike;
 use App\Models\BikeRequest;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,10 +33,71 @@ class BikeRequestResource extends Resource
     protected static ?string $navigationLabel = 'Bike Requested';
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                //
-            ]);
+        return $form->schema([
+
+            // Merk
+            Select::make('bike_merk_id')
+                ->label('Bike Merk')
+                ->relationship('bikeMerk', 'name')
+                ->required(),
+
+            // Type
+            Select::make('bike_type_id')
+                ->label('Bike Type')
+                ->relationship('bikeType', 'name')
+                ->required(),
+
+            // Color
+            Select::make('bike_color_id')
+                ->label('Bike Color')
+                ->relationship('bikeColor', 'color')
+                ->required(),
+
+            // Capacity
+            Select::make('bike_capacity_id')
+                ->label('Bike Capacity')
+                ->relationship('bikeCapacity', 'capacity')
+                ->required(),
+
+            TextInput::make('year')
+                ->label('Year')
+                ->required()
+                ->numeric()
+                ->maxLength(4),
+
+            TextInput::make('license_plate')
+                ->label('License Plate')
+                ->required()
+                ->unique(ignoreRecord: true),
+
+            TextInput::make('price')
+                ->label('Rental Price Per Day')
+                ->required()
+                ->numeric(),
+
+            Select::make('availability_status')
+                ->label('Availability Status')
+                ->options([
+                    'available' => 'Available',
+                    'rented' => 'Rented',
+                ])
+                ->required(),
+
+
+
+            CheckboxList::make('addOns')
+                ->label('Add-ons')
+                ->relationship('addOns', 'name')
+                ->columns(2),
+
+            Textarea::make('description')
+                    ->label('Description'),
+
+            FileUpload::make('photo')
+                ->image()
+                ->directory('rent-bike-photos')
+                ->nullable(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -42,30 +107,16 @@ class BikeRequestResource extends Resource
                 ImageColumn::make('photo')
                     ->label('Photo')
                     ->size(50),
-                TextColumn::make('bikeMerk.name')->label('Merk'),
-                TextColumn::make('bikeType.name')->label('Type'),
-                TextColumn::make('bikeColor.color')->label('Color'),
-                TextColumn::make('bikeCapacity.capacity')->label('Capacity'),
-                TextColumn::make('year'),
-                TextColumn::make('license_plate'),
-                TextColumn::make('price')->money('usd', true),
+                TextColumn::make('bikeType.name')->label('Bike Type')->sortable()->searchable(),
+                TextColumn::make('bikeMerk.name')->label('Bike Merk')->sortable()->searchable(),
+                TextColumn::make('vendor.name')->label('Requester')->sortable()->searchable(),
+                TextColumn::make('status')->label('Status')->sortable(),
                 BadgeColumn::make('status')
                     ->colors([
                         'primary',
                         'success' => 'accepted',
                         'danger' => 'requested',
                     ]),
-                BadgeColumn::make('availability_status')
-                    ->colors([
-                        'primary',
-                        'success' => 'available',
-                        'warning' => 'rented',
-                    ]),
-                TextColumn::make('addOns.name')
-                    ->label('Add-ons')
-                    ->wrap()
-                    ->limit(50)
-                    ->sortable(false),
             ])
             ->filters([
                 //
@@ -87,28 +138,15 @@ class BikeRequestResource extends Resource
                     ->modalHeading('Edit Status')
                     ->icon('heroicon-o-pencil')
                     ->color('primary'),
-                Tables\Actions\Action::make('editStatusAvaibility')
-                    ->label('Edit Status Avaible')
-                    ->form([
-                        Select::make('availability_status')
-                            ->options([
-                                'available' => 'Available',
-                                'rented' => 'Rented',
-                            ])
-                            ->required(),
-                    ])
-                    ->action(function ($record, $data) {
-                        $record->update($data);
-                    })
-                    ->modalHeading('Edit Status')
-                    ->icon('heroicon-o-pencil')
-                    ->color('primary'),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
 

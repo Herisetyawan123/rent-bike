@@ -25,6 +25,11 @@ class AddOnResource extends Resource
 
     protected static ?string $navigationLabel = 'Add On For Bike';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

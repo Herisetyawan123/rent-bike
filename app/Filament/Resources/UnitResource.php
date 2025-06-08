@@ -24,6 +24,11 @@ class UnitResource extends Resource
     protected static ?string $modelLabel = 'Unit';
     protected static ?string $pluralModelLabel = 'Units';
 
+        public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([

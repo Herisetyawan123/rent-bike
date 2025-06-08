@@ -20,6 +20,6 @@ class Transaction extends Model
 
     public function bike()
     {
-        return $this->belongsTo(RentBike::class, 'rent_bike_id', 'id');
+        return $this->belongsTo(Bike::class, 'rent_bike_id', 'id');
     }
 }

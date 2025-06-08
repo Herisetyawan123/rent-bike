@@ -28,9 +28,11 @@ class RenterResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'User Management';
 
+        protected static ?string $navigationLabel = 'Renter';
+
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->role =='admin';
+        return auth()->user()?->hasRole('admin');
     }
     
     public static function form(Form $form): Form

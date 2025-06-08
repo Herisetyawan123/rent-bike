@@ -16,7 +16,7 @@ class Bike extends Model
 
     public function vendor()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'vendor_id', 'id');
     }
 
     public function addOns()

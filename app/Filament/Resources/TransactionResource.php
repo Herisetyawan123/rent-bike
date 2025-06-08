@@ -31,77 +31,81 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-             Select::make('rent_bike_id')
-                ->label('Bike')
-                ->options(function () {
-                    return \App\Models\RentBike::where('user_id', Auth::id())
-                        ->pluck('brand', 'id');
-                })
-                ->searchable()
-                ->required(),
+                Select::make('rent_bike_id')
+                    ->label('Bike')
+                    ->options(function () {
+                        return \App\Models\Bike::with('bikeMerk', 'bikeType')
+                            ->where('user_id', Auth::id())
+                            ->where('status', 'accepted')
+                            ->get()
+                            ->mapWithKeys(function ($bike) {
+                                return [$bike->id => $bike->bikeMerk->name . ' - ' . $bike->bikeType->name. ' '. $bike->bikeCapacity->capacity . 'cc - ' . $bike->bikeColor->color];
+                            })->toArray();
+                    })
+                    ->required(),
 
-            Select::make('customer_id')
-                ->label('Customer')
-                ->options(function () {
-                    return \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'renter'))
-                        ->pluck('name', 'id');
-                })
-                ->searchable()
-                ->required(),
+                Select::make('customer_id')
+                    ->label('Customer')
+                    ->options(function () {
+                        return \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'renter'))
+                            ->pluck('name', 'id');
+                    })
+                    ->searchable()
+                    ->required(),
 
-            DateTimePicker::make('start_date')
-                ->label('Start Date')
-                ->required(),
+                DateTimePicker::make('start_date')
+                    ->label('Start Date')
+                    ->required(),
 
-            TextInput::make('rental_days')
-                ->label('Jumlah Hari Sewa')
-                ->numeric()
-                ->minValue(1)
-                ->required(),
+                TextInput::make('rental_days')
+                    ->label('Jumlah Hari Sewa')
+                    ->numeric()
+                    ->minValue(1)
+                    ->required(),
 
-            DateTimePicker::make('end_date')
-                ->label('End Date')
-                ->disabled(), // kita hitung otomatis di backend
+                DateTimePicker::make('end_date')
+                    ->label('End Date')
+                    ->disabled(), // kita hitung otomatis di backend
 
-            TextInput::make('total_tax')
-                ->label('Total Tax')
-                ->numeric()
-                ->default(0),
+                TextInput::make('total_tax')
+                    ->label('Total Tax')
+                    ->numeric()
+                    ->default(0),
 
-            Select::make('status')
-                ->label('Status')
-                ->options([
-                    'payment_pending' => 'Payment Pending',
-                    'paid' => 'Paid',
-                    'awaiting_pickup' => 'Awaiting Pickup',
-                    'being_delivered' => 'Being Delivered',
-                    'in_use' => 'In Use',
-                    'cancelled' => 'Cancelled',
-                    'completed' => 'Completed',
-                ])
-                ->default('payment_pending')
-                ->required(),
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'payment_pending' => 'Payment Pending',
+                        'paid' => 'Paid',
+                        'awaiting_pickup' => 'Awaiting Pickup',
+                        'being_delivered' => 'Being Delivered',
+                        'in_use' => 'In Use',
+                        'cancelled' => 'Cancelled',
+                        'completed' => 'Completed',
+                    ])
+                    ->default('payment_pending')
+                    ->required(),
 
-            Select::make('pickup_type')
-                ->label('Pickup Type')
-                ->options([
-                    'pickup_self' => 'Pickup Self',
-                    'delivery' => 'Delivery',
-                ])
-                ->default('pickup_self')
-                ->required()
-                ->reactive(),
+                Select::make('pickup_type')
+                    ->label('Pickup Type')
+                    ->options([
+                        'pickup_self' => 'Pickup Self',
+                        'delivery' => 'Delivery',
+                    ])
+                    ->default('pickup_self')
+                    ->required()
+                    ->reactive(),
 
-            Textarea::make('delivery_address')
-                ->label('Delivery Address')
-                ->visible(fn (callable $get) => $get('pickup_type') === 'delivery')
-                ->nullable(),
+                Textarea::make('delivery_address')
+                    ->label('Delivery Address')
+                    ->visible(fn (callable $get) => $get('pickup_type') === 'delivery')
+                    ->nullable(),
 
-            TextInput::make('delivery_fee')
-                ->label('Delivery Fee')
-                ->numeric()
-                ->default(0)
-                ->visible(fn (callable $get) => $get('pickup_type') === 'delivery'),
+                TextInput::make('delivery_fee')
+                    ->label('Delivery Fee')
+                    ->numeric()
+                    ->default(0)
+                    ->visible(fn (callable $get) => $get('pickup_type') === 'delivery'),
             ]);
     }
 

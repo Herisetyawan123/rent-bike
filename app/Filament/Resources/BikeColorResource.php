@@ -23,6 +23,12 @@ class BikeColorResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-swatch';
     protected static ?string $navigationGroup = 'Bike Management';
     protected static ?string $navigationLabel = 'Bike Colors';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
