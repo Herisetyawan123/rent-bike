@@ -22,6 +22,8 @@ class OrderController extends Controller
             return [
                 'id' => $order->id,
                 'photo' => $order->bike->photo ?? null,
+                'year' => $order->bike->year ?? null,
+                'price' => $order->bike->price ?? null,
                 'merk' => $order->bike->bikeMerk->name ?? null,
                 'type' => $order->bike->bikeType->name ?? null,
                 'capacity' => $order->bike->bikeCapacity->description . ' (' . $order->bike->bikeCapacity->capacity . 'cc)',
