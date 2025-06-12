@@ -19,8 +19,9 @@ class BikeController extends Controller
                 ->latest()
                 ->take(5)
                 ->get();
-
-            $newest = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])
+                
+                $newest = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])
+                ->where('availability_status', 'available')
                 ->latest()
                 ->get();
 
