@@ -22,7 +22,6 @@ class BikeController extends Controller
 
             $newest = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])
                 ->latest()
-                ->take(10)
                 ->get();
 
             return response()->json([
