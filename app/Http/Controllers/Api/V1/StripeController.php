@@ -55,7 +55,7 @@ class StripeController extends Controller
 
                 $transaction = Transaction::find($transactionId);
                 if ($transaction) {
-                    $transaction->transaction_status = 'paid';
+                    $transaction->status = 'paid';
                     $transaction->save();
                 }
             }
