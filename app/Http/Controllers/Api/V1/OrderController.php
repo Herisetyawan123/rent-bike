@@ -9,6 +9,36 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+
+    public function index()
+    {
+        $user = auth()->user();
+
+        $orders = Transaction::with(['bike.bikeMerk', 'bike.bikeType', 'bike.bikeColor', 'bike.bikeCapacity', 'customer', 'vendor'])
+            ->where('customer_id', $user->id) // Bisa diganti jadi vendor_id kalau role vendor
+            ->latest()
+            ->get()
+                    ->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'photo' => $order->bike->photo ?? null,
+                'merk' => $order->bike->bikeMerk->name ?? null,
+                'type' => $order->bike->bikeType->name ?? null,
+                'capacity' => $order->bike->bikeCapacity->description . ' (' . $order->bike->bikeCapacity->capacity . 'cc)',
+                'price_total' => $order->final_total,
+                'license_plate' => $order->bike->license_plate ?? null,
+                'transaction_status' => $order->status,
+                'vendor_name' => $order->vendor->name ?? null,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'List of Orders',
+            'data' => $orders
+        ]);
+    }
+
     public function store(Request $request, $id)
     {
         $request->validate([
