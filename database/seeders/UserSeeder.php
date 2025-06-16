@@ -26,6 +26,7 @@ class UserSeeder extends Seeder
             ['email' => 'admin@mail.com'],
             [
                 'name' => 'Super Admin',
+                'phone' => '6283853797951',
                 'password' => Hash::make('password'), // ganti password di production
             ]
         );
@@ -45,7 +46,6 @@ class UserSeeder extends Seeder
             'business_name' => 'Software Host',
             'contact_person_name' => 'Heri Setyawan',
             'business_address' => 'Jauh sana sekali',
-            'phone' => '652999999',
             'national_id' => '097234987987'
         ]);
         $vendor->assignRole($vendorRole);
@@ -55,6 +55,7 @@ class UserSeeder extends Seeder
             'name' => 'Rina Putri',
             'email' => 'renter@mail.com',
             'password' => Hash::make('password'),
+            'phone' => '6283853797950',
         ]);
 
         // Assign role kalau pakai Spatie

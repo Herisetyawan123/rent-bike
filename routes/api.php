@@ -15,6 +15,8 @@ Route::get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/send-otp', [AuthController::class, 'sendOtp']);
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);    
     
     Route::resource('bikes', BikeController::class)
         ->only(['index', 'show', 'store', 'update', 'destroy']);

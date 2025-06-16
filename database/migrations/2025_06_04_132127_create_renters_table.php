@@ -23,7 +23,6 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->text('current_address')->nullable();
             $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed'])->nullable();
-            $table->string('phone')->nullable();                // hp
             $table->timestamps();
         });
     }

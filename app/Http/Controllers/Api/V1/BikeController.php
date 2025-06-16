@@ -13,7 +13,47 @@ class BikeController extends Controller
      */
     public function index()
     {
-         try {
+        $browser = request()->get('browse');
+        if($browser && $browser === 'true') 
+        {
+            return $this->browse();
+        }
+
+        $search = request()->get('search');
+
+        $query = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('bikeMerk', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('bikeType', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('bikeColor', function ($q) use ($search) {
+                        $q->where('color', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('bikeCapacity', function ($q) use ($search) {
+                        $q->where('capacity', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $bikes = $query->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Success get bikes',
+            'data' => $bikes,
+            'error' => null,
+        ]);
+    }
+
+    private function browse()
+    {
+        try {
             $featured = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])
                 ->where('availability_status', 'available')
                 ->latest()

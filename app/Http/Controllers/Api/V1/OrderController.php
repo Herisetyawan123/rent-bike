@@ -15,7 +15,7 @@ class OrderController extends Controller
         $user = auth()->user();
 
         $orders = Transaction::with(['bike.bikeMerk', 'bike.bikeType', 'bike.bikeColor', 'bike.bikeCapacity', 'customer', 'vendor'])
-            ->where('customer_id', $user->id) // Bisa diganti jadi vendor_id kalau role vendor
+            ->where('customer_id', $user->id)
             ->latest()
             ->get()
                     ->map(function ($order) {

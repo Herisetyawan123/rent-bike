@@ -40,4 +40,7 @@ return [
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
+    'fonnte' => [
+        'key' => env('FONNTE_API_KEY'),
+    ],
 ];
