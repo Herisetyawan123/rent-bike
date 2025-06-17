@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('business_address');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
-            $table->string('phone');
             $table->string('photo_attachment')->nullable();
             $table->string('national_id'); // NIK
             $table->string('legal_documents')->nullable();
