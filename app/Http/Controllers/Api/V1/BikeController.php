@@ -25,8 +25,7 @@ class BikeController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                    ->orWhereHas('bikeMerk', function ($q) use ($search) {
+                $q->orWhereHas('bikeMerk', function ($q) use ($search) {
                         $q->where('name', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('bikeType', function ($q) use ($search) {
