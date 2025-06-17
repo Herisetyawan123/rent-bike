@@ -38,6 +38,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Vendor Motor',
                 'password' => Hash::make('password'),
+                'phone' => '6283853797950',
             ]
         );
 
