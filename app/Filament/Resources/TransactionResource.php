@@ -36,19 +36,19 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('bike_id')
-                    ->label('Bike')
-                    ->options(function () {
-                        return \App\Models\Bike::with('bikeMerk', 'bikeType')
-                            ->where('user_id', Auth::id())
-                            ->where('status', 'accepted')
-                            ->where('availability_status', 'available')
-                            ->get()
-                            ->mapWithKeys(function ($bike) {
-                                return [$bike->id => $bike->bikeMerk->name . ' - ' . $bike->bikeType->name. ' '. $bike->bikeCapacity->capacity . 'cc - ' . $bike->bikeColor->color];
-                            })->toArray();
-                    })
-                    ->required(),
+                // Select::make('bike_id')
+                //     ->label('Bike')
+                //     ->options(function () {
+                //         return \App\Models\Bike::with('bikeMerk', 'bikeType')
+                //             ->where('user_id', Auth::id())
+                //             ->where('status', 'accepted')
+                //             ->where('availability_status', 'available')
+                //             ->get()
+                //             ->mapWithKeys(function ($bike) {
+                //                 return [$bike->id => $bike->bikeMerk->name . ' - ' . $bike->bikeType->name. ' '. $bike->bikeCapacity->capacity . 'cc - ' . $bike->bikeColor->color];
+                //             })->toArray();
+                //     })
+                //     ->required(),
 
                 Select::make('customer_id')
                     ->label('Customer')
