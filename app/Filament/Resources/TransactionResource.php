@@ -22,6 +22,7 @@ use Smalot\PdfParser\Parser;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Actions\Action;
 
 class TransactionResource extends Resource
@@ -36,6 +37,7 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
+                Hidden::make('bike_id'),
                 // Select::make('bike_id')
                 //     ->label('Bike')
                 //     ->options(function () {

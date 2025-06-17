@@ -16,4 +16,15 @@ class EditTransaction extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if(isset($data['status']) && $data['status'] === 'completed') {
+            $bike = \App\Models\Bike::find($data['bike_id']);
+            if ($bike) {
+                $bike->update(['availability_status' => 'available']);
+            }
+        }
+        return $data;
+    }
 }
