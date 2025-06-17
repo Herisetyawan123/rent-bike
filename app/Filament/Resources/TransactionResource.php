@@ -63,11 +63,11 @@ class TransactionResource extends Resource
                     ->label('Start Date')
                     ->required(),
 
-                TextInput::make('rental_days')
-                    ->label('Jumlah Hari Sewa')
-                    ->numeric()
-                    ->minValue(1)
-                    ->required(),
+                // TextInput::make('rental_days')
+                //     ->label('Jumlah Hari Sewa')
+                //     ->numeric()
+                //     ->minValue(1)
+                //     ->required(),
 
                 DateTimePicker::make('end_date')
                     ->label('End Date')
