@@ -74,7 +74,6 @@ class UserSeeder extends Seeder
             'address' => 'Jalan Merdeka No. 10, Surabaya',
             'current_address' => 'Kost Putri Indah, Surabaya',
             'marital_status' => 'single',
-            'phone' => '081234567890',
         ]);
         $this->command->info('Admin dan Vendor berhasil dibuat.');
     }
