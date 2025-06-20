@@ -18,6 +18,7 @@ class BussinessSettingSeeder extends Seeder
             ['setting_key' => 'app_margin_type', 'setting_value' => 'percentage'], // atau 'flat'
             ['setting_key' => 'app_tax', 'setting_value' => '11'],
             ['setting_key' => 'app_name', 'setting_value' => 'My Rental App'],
+            ['setting_key' => 'fonnte_api_key', 'setting_value' => 'ezihKXDgDTQZNZkooR5q'],
             ['setting_key' => 'app_email', 'setting_value' => 'admin@myapp.com'],
             ['setting_key' => 'app_contact', 'setting_value' => '081234567890'],
             ['setting_key' => 'app_address', 'setting_value' => 'Jl. Merdeka No.123, Jakarta'],
