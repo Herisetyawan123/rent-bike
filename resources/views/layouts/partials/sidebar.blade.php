@@ -58,20 +58,20 @@
             Kontrak Peminjaman
         </a>
 
-        <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Data Lain</p>
+        {{-- <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Data Lain</p> --}}
 
         {{-- Belum ada route --}}
-        <a href="#"
+        {{-- <a href="#"
             class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition duration-300">
             <i class="fad fa-star-half-alt text-xs mr-2"></i>
             Ulasan & Rating
-        </a>
+        </a> --}}
 
-        <a href="{{ route('admin-vendor.reports.index') }}"
+        {{-- <a href="{{ route('admin-vendor.reports.index') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.reports.index') ? 'text-teal-600' : 'hover:text-teal-600' }}">
             <i class="fad fa-chart-line text-xs mr-2"></i>
             Laporan Keuangan
-        </a>
+        </a> --}}
 
         <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Akun Vendor</p>
 
@@ -88,11 +88,11 @@
         </a>
 
         {{-- Belum ada route --}}
-        <a href="#"
+        {{-- <a href="#"
             class="mb-3 capitalize font-medium text-sm hover:text-teal-600 transition duration-300">
             <i class="fad fa-question-circle text-xs mr-2"></i>
             Bantuan
-        </a>
+        </a> --}}
 
     </div>
 </div>

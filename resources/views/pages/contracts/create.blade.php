@@ -1,29 +1,42 @@
 @extends('layouts.app')
-@section('title', 'Tambah Template Kontrak')
+@section('title', 'Tambah Syarat Kontrak')
 
 @section('content')
-<div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
-  <h1 class="text-xl font-semibold mb-4">Upload Template PDF</h1>
+<div class="bg-white p-6 rounded shadow max-w-xl mx-auto">
+  <h1 class="text-2xl font-semibold mb-6">Tambah Syarat Kontrak</h1>
 
-  <form action="{{ route('admin-vendor.contracts.store') }}" method="POST" enctype="multipart/form-data">
+  @if ($errors->any())
+    <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+      <ul class="list-disc list-inside text-sm">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+
+  <form action="{{ route('admin-vendor.contracts.store') }}" method="POST">
     @csrf
 
     <div class="mb-4">
-      <label class="block mb-1 font-medium">Nama Template</label>
-      <input type="text" name="name" value="{{ old('name') }}"
-             class="w-full border rounded px-3 py-2 @error('name') border-red-500 @enderror">
-      @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+      <label for="content" class="block font-medium text-sm text-gray-700 mb-1">Isi Syarat</label>
+      <textarea name="content" id="content" rows="4" required
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-teal-400">{{ old('content') }}</textarea>
     </div>
 
-    <div class="mb-6">
-      <label class="block mb-1 font-medium">File PDF</label>
-      <input type="file" name="file" accept="application/pdf"
-             class="w-full border rounded px-3 py-2 @error('file') border-red-500 @enderror">
-      @error('file') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+    <div class="mb-4">
+      <label for="order" class="block font-medium text-sm text-gray-700 mb-1">Urutan (Opsional)</label>
+      <input type="number" name="order" id="order" value="{{ old('order') }}"
+             class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-teal-400" placeholder="Contoh: 1">
     </div>
 
-    <div class="text-right">
-      <button class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded">Upload</button>
+    <div class="flex justify-end space-x-2">
+      <a href="{{ route('admin-vendor.contracts.index') }}"
+         class="px-4 py-2 border text-gray-700 rounded hover:bg-gray-100 text-sm">Batal</a>
+      <button type="submit"
+              class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm">
+        Simpan
+      </button>
     </div>
   </form>
 </div>

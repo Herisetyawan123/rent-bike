@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContractClause;
 use App\Models\ContractLatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +16,8 @@ class ContractController extends Controller
      */
     public function index()
     {
-        $templates = ContractLatter::where('vendor_id', Auth::id())->latest()->get();
-        return view('pages.contracts.index', compact('templates'));
+        $clauses = ContractClause::where('vendor_id', Auth::id())->orderBy('order')->get();
+        return view('pages.contracts.index', compact('clauses'));
     }
 
     /**
@@ -32,22 +33,19 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'file' => 'required|mimes:pdf|max:20480', // max 20 MB
+        $validated = $request->validate([
+            'content' => 'required|string|max:1000',
+            'order' => 'nullable|integer|min:1',
         ]);
 
-        $path = $request->file('file')
-                        ->store('vendor-templates', 'public'); // disimpan di storage/app/public/contracts
-
-        ContractLatter::create([
+        ContractClause::create([
             'vendor_id' => Auth::id(),
-            'name'      => $request->name,
-            'file_path' => $path,
+            'content' => $validated['content'],
+            'order' => $validated['order'] ?? null,
         ]);
 
         return redirect()->route('admin-vendor.contracts.index')
-                         ->with('success', 'Template kontrak berhasil di‑upload.');
+                        ->with('success', 'Syarat kontrak berhasil ditambahkan.');
     }
 
     /**
@@ -63,16 +61,24 @@ class ContractController extends Controller
      */
     public function edit($id)
     {
-        $contract = ContractLatter::findOrFail($id);
-        return view('pages.contracts.edit', compact('contract'));
+        $clause = ContractClause::where('vendor_id', Auth::id())->findOrFail($id);
+        return view('pages.contracts.edit', compact('clause'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'content' => 'required|string|max:1000',
+            'order' => 'nullable|integer|min:1',
+        ]);
+
+        $clause = ContractClause::where('vendor_id', Auth::id())->findOrFail($id);
+        $clause->update($validated);
+
+        return redirect()->route('admin-vendor.contracts.index')->with('success', 'Syarat kontrak diperbarui.');
     }
 
     /**
@@ -80,15 +86,9 @@ class ContractController extends Controller
      */
     public function destroy($id)
     {
-        $contract = ContractLatter::findOrFail($id);
-        Storage::disk('public')->delete($contract->file_path);
-        $contract->delete();
+        $clause = ContractClause::where('vendor_id', Auth::id())->findOrFail($id);
+        $clause->delete();
 
-        return back()->with('success', 'Template kontrak dihapus.');
-    }
-
-    private function authorizeVendor(ContractTemplate $contract)
-    {
-        abort_unless($contract->vendor_id === Auth::id(), 403);
+        return redirect()->route('admin-vendor.contracts.index')->with('success', 'Syarat kontrak dihapus.');
     }
 }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bike;
+use App\Models\ContractClause;
 use App\Models\ContractLatter;
 use App\Models\Transaction;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -162,7 +164,31 @@ class TransactionController extends Controller
         //
     }
 
-    public function downloadContract(Transaction $transaction)
+    public function downloadContract($transactionId)
+    {
+        $transaction = Transaction::with(['bike.bikeMerk', 'bike.bikeType', 'customer', 'vendor'])->findOrFail($transactionId);
+        $clauses = ContractClause::where('id', $transaction->vendor_id)->pluck('content')->toArray();
+
+        $start = \Carbon\Carbon::parse($transaction->start_date);
+        $end = \Carbon\Carbon::parse($transaction->end_date);
+        $durasi = $start->diffInDays($end) + 1;
+
+        $pdf = Pdf::loadView('pages.contracts.print.template', [
+            'tanggal' => now()->translatedFormat('d F'),
+            'tahun' => now()->format('Y'),
+            'vendor' => $transaction->vendor,
+            'customer' => $transaction->customer,
+            'bike' => $transaction->bike,
+            'durasi' => $durasi,
+            'start_date' => $start->format('d-m-Y'),
+            'batal_hari' => 3, // bisa ubah sesuai kebijakan
+                'clauses' => $clauses, // ⬅️ ini penting
+        ]);
+
+        return $pdf->download("kontrak-{$transaction->id}.pdf");
+    }
+
+    public function downloadContract2(Transaction $transaction)
     {
         // pastikan vendor pemilik transaksi
         abort_unless($transaction->vendor_id === Auth::id(), 403);
