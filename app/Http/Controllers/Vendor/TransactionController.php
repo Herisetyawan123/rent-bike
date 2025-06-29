@@ -62,7 +62,9 @@ class TransactionController extends Controller
 
         // Ambil data motor
         $bike = Bike::findOrFail($validated['bike_id']);
-
+        $bike->availability_status = 'rented';
+        $bike->save();
+        
         // Hitung durasi hari
         $startDate = Carbon::parse($validated['start_date']);
         $endDate = Carbon::parse($validated['end_date']);
