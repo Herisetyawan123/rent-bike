@@ -16,7 +16,7 @@
                   <div class="flex flex-row justify-between items-center">
                       <div class="h6 text-indigo-700 fad fa-shopping-cart"></div>
                       <span class="rounded-full text-white badge bg-teal-400 text-xs">
-                          12%
+                          12
                           <i class="fal fa-chevron-up ml-1"></i>
                       </span>
                   </div>
@@ -25,7 +25,7 @@
                   <!-- bottom -->
                   <div class="mt-8">
                       <h1 class="h5 num-4"></h1>
-                      <p>items sales</p>
+                      <p>Transactions</p>
                   </div>
                   <!-- end bottom -->
 
@@ -45,7 +45,7 @@
                   <div class="flex flex-row justify-between items-center">
                       <div class="h6 text-red-700 fad fa-store"></div>
                       <span class="rounded-full text-white badge bg-red-400 text-xs">
-                          6%
+                          6
                           <i class="fal fa-chevron-down ml-1"></i>
                       </span>
                   </div>
@@ -74,7 +74,7 @@
                   <div class="flex flex-row justify-between items-center">
                       <div class="h6 text-yellow-600 fad fa-sitemap"></div>
                       <span class="rounded-full text-white badge bg-teal-400 text-xs">
-                          72%
+                          72
                           <i class="fal fa-chevron-up ml-1"></i>
                       </span>
                   </div>
@@ -83,7 +83,7 @@
                   <!-- bottom -->
                   <div class="mt-8">
                       <h1 class="h5 num-4"></h1>
-                      <p>total Products</p>
+                      <p>total bikes</p>
                   </div>
                   <!-- end bottom -->
 
@@ -103,7 +103,7 @@
                   <div class="flex flex-row justify-between items-center">
                       <div class="h6 text-green-700 fad fa-users"></div>
                       <span class="rounded-full text-white badge bg-teal-400 text-xs">
-                          150%
+                          Rp. 100,000
                           <i class="fal fa-chevron-up ml-1"></i>
                       </span>
                   </div>
@@ -112,7 +112,7 @@
                   <!-- bottom -->
                   <div class="mt-8">
                       <h1 class="h5 num-4"></h1>
-                      <p>new Visitor</p>
+                      <p>Revenue</p>
                   </div>
                   <!-- end bottom -->
 

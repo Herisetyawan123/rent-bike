@@ -17,10 +17,12 @@ Route::prefix('admin-vendor')
     ->group(function () {
 
     // Dashboard - single page
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Resource routes
     Route::resource('motors', MotorController::class);
+    Route::get('motors/draft', function() {})->name('motors.draft');
+    Route::get('motors/trash', function() {})->name('motors.trash');
     Route::resource('transactions', TransactionController::class);
     Route::resource('contracts', ContractController::class);
     Route::resource('reports', ReportController::class);
