@@ -8,6 +8,11 @@ class Transaction extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id', 'id');

@@ -32,6 +32,10 @@ Route::prefix('admin-vendor')
     Route::get('motors/draft', [MotorController::class, 'draft'])->name('motors.draft');
     Route::get('motors/trash', function() {})->name('motors.trash');
     Route::resource('transactions', TransactionController::class);
+    Route::get(
+        'transactions/{transaction}/contract',
+        [TransactionController::class, 'downloadContract']
+    )->name('transactions.contract');
     Route::resource('contracts', ContractController::class);
     Route::resource('reports', ReportController::class);
     Route::resource('profiles', ProfileController::class);
