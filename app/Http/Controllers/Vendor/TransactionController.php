@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -12,7 +14,13 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $vendorId = Auth::id(); // atau bisa juga dari request param
+        $transactions = Transaction::with(['bike.merk', 'bike.type', 'customer'])
+            ->where('vendor_id', $vendorId)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('pages.transactions.index', compact('transactions'));
     }
 
     /**

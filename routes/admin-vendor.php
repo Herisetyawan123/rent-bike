@@ -8,11 +8,19 @@ use App\Http\Controllers\Vendor\{
     ContractController,
     ReportController,
     ProfileController,
-    NotificationController
+    NotificationController,
+    VendorAuthController
 };
 
+
+Route::get('login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
+Route::post('login', [VendorAuthController::class, 'login']);
+
+Route::get('register', [VendorAuthController::class, 'showRegisterForm'])->name('vendor.register');
+Route::post('register', [VendorAuthController::class, 'register']);
+
 Route::prefix('admin-vendor')
-    // ->middleware(['auth', 'role:vendor'])
+    ->middleware(['auth'])
     ->name('admin-vendor.')
     ->group(function () {
 
@@ -21,7 +29,7 @@ Route::prefix('admin-vendor')
 
     // Resource routes
     Route::resource('motors', MotorController::class);
-    Route::get('motors/draft', function() {})->name('motors.draft');
+    Route::get('motors/draft', [MotorController::class, 'draft'])->name('motors.draft');
     Route::get('motors/trash', function() {})->name('motors.trash');
     Route::resource('transactions', TransactionController::class);
     Route::resource('contracts', ContractController::class);

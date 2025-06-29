@@ -28,11 +28,11 @@
             Daftar Motor
         </a>
 
-        <a href="{{ route('admin-vendor.motors.draft') }}"
+        {{-- <a href="{{ route('admin-vendor.motors.draft') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.motors.draft') ? 'text-teal-600' : 'hover:text-teal-600' }}">
             <i class="fad fa-clock text-xs mr-2"></i>
             Draft Motor
-        </a>
+        </a> --}}
 
         <a href="{{ route('admin-vendor.motors.create') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.motors.create') ? 'text-teal-600' : 'hover:text-teal-600' }}">
@@ -40,11 +40,11 @@
             Tambah Motor
         </a>
 
-        <a href="{{ route('admin-vendor.motors.trash') }}"
+        {{-- <a href="{{ route('admin-vendor.motors.trash') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.motors.trash') ? 'text-teal-600' : 'hover:text-teal-600' }}">
             <i class="fad fa-trash text-xs mr-2"></i>
             Sampah Motor
-        </a>
+        </a> --}}
 
         <a href="{{ route('admin-vendor.transactions.index') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.transactions.index') ? 'text-teal-600' : 'hover:text-teal-600' }}">
