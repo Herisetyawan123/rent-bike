@@ -135,7 +135,6 @@ class OrderController extends Controller
 
         $finalTotal = $total + $totalTax + $deliveryFee;
 
-
         $order = Transaction::create([
             'bike_id' => $bike->id,
             'customer_id' => $user->id,
