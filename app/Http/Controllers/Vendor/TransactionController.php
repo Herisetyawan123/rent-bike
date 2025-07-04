@@ -169,12 +169,12 @@ class TransactionController extends Controller
     public function downloadContract($transactionId)
     {
         $transaction = Transaction::with(['bike.bikeMerk', 'bike.bikeType', 'customer', 'vendor'])->findOrFail($transactionId);
-        $clauses = ContractClause::where('id', $transaction->vendor_id)->pluck('content')->toArray();
+        $clauses = ContractClause::where('vendor_id', $transaction->vendor_id)->pluck('content')->toArray();
 
         $start = \Carbon\Carbon::parse($transaction->start_date);
         $end = \Carbon\Carbon::parse($transaction->end_date);
         $durasi = $start->diffInDays($end) + 1;
-
+        // dd($clauses)
         $pdf = Pdf::loadView('pages.contracts.print.template', [
             'tanggal' => now()->translatedFormat('d F'),
             'tahun' => now()->format('Y'),
