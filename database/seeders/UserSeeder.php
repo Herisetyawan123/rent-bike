@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constant\VendorPermission;
 use App\Models\Area;
 use App\Models\Renter;
 use Illuminate\Database\Seeder;
@@ -9,6 +10,8 @@ use App\Models\User;
 use App\Models\Vendor;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission as SpatiePermission;
+use ReflectionClass;
 
 class UserSeeder extends Seeder
 {
@@ -17,10 +20,22 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $permissions = (new ReflectionClass(VendorPermission::class))->getConstants();
+
+        foreach ($permissions as $perm) {
+            SpatiePermission::firstOrCreate(['name' => $perm]);
+        }
+
+        // Cari role 'vendor'
+        $vendorRole = Role::firstOrCreate(['name' => 'vendor']);
+
+        // Assign semua permission ke role vendor
+        $vendorRole->givePermissionTo(array_values($permissions));
+        
         // Buat role
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $vendorRole = Role::firstOrCreate(['name' => 'vendor']);
         $renterRole = Role::firstOrCreate(['name' => 'renter']);
+
 
         // Buat admin
         $admin = User::firstOrCreate(
