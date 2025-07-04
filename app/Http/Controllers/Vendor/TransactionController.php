@@ -187,7 +187,12 @@ class TransactionController extends Controller
             'clauses' => $clauses, // ⬅️ ini penting
         ]);
 
-        return $pdf->download("kontrak-{$transaction->id}.pdf");
+        $customer = str_replace(' ', '_', strtolower($transaction->customer->name));
+        $tanggal  = \Carbon\Carbon::parse($transaction->start_date)->format('Ymd');
+
+        $filename = "kontrak-{$customer}-{$tanggal}-{$transaction->id}.pdf";
+
+        return $pdf->download($filename);
     }
 
     public function downloadContract2(Transaction $transaction)
