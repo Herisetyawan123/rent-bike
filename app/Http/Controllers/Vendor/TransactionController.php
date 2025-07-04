@@ -184,7 +184,7 @@ class TransactionController extends Controller
             'durasi' => $durasi,
             'start_date' => $start->format('d-m-Y'),
             'batal_hari' => 3, // bisa ubah sesuai kebijakan
-                'clauses' => $clauses, // ⬅️ ini penting
+            'clauses' => $clauses, // ⬅️ ini penting
         ]);
 
         return $pdf->download("kontrak-{$transaction->id}.pdf");

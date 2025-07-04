@@ -32,7 +32,7 @@
 
                     <button class="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center">
                         <div class="w-8 h-8 overflow-hidden rounded-full">
-                            <img class="w-full h-full object-cover" src="{{ asset('assets/img/user.svg') }}">
+                            <img class="w-full h-full object-cover" src="{{ isset(auth()->user()->photo) ? asset("storage/".auth()->user()->photo) : asset('assets/img/user.svg') }}">
                         </div>
 
                         <div class="ml-2 capitalize flex ">
@@ -50,14 +50,14 @@
 
                         <!-- item -->
                         <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
-                            href="#">
+                            href="{{ route('admin-vendor.edit') }}">
                             <i class="fad fa-user-edit text-xs mr-1"></i>
                             edit my profile
                         </a>
                         <!-- end item -->
 
                         <!-- item -->
-                        <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
+                        <a class="px-4 py-2 capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out hidden"
                             href="#">
                             <i class="fad fa-inbox-in text-xs mr-1"></i>
                             my inbox
@@ -65,7 +65,7 @@
                         <!-- end item -->
 
                         <!-- item -->
-                        <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
+                        <a class="px-4 py-2 hidden capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
                             href="#">
                             <i class="fad fa-badge-check text-xs mr-1"></i>
                             tasks
@@ -73,7 +73,7 @@
                         <!-- end item -->
 
                         <!-- item -->
-                        <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
+                        <a class="px-4 py-2 hidden capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
                             href="#">
                             <i class="fad fa-comment-alt-dots text-xs mr-1"></i>
                             chats
@@ -83,11 +83,14 @@
                         <hr>
 
                         <!-- item -->
-                        <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out"
-                            href="#">
-                            <i class="fad fa-user-times text-xs mr-1"></i>
-                            log out
-                        </a>
+                        <form action="{{ route('logout') }}" method="post" class="w-full bg-black">
+                            @csrf
+                            <button class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out w-full"
+                                >
+                                <i class="fad fa-user-times text-xs mr-1"></i>
+                                log out
+                            </button>
+                        </form>
                         <!-- end item -->
 
                     </div>
@@ -98,7 +101,7 @@
                 <div class="dropdown relative mr-5 md:static">
 
                     <button
-                        class="text-gray-500 menu-btn p-0 m-0 hover:text-gray-900 focus:text-gray-900 focus:outline-none transition-all ease-in-out duration-300">
+                        class="text-gray-500 menu-btn p-0 m-0 hover:text-gray-900 focus:text-gray-900 focus:outline-none transition-all ease-in-out duration-300 hidden">
                         <i class="fad fa-bells"></i>
                     </button>
 

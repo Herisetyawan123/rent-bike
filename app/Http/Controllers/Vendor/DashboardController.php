@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bike;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -12,7 +15,20 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view("pages.dashboard.index");
+        $user = Auth::user();
+        
+        $transaction_count = Transaction::where('vendor_id', $user->id)->count();
+        $transaction_pending_count = Transaction::where('vendor_id', $user->id)->whereIn('status', [
+             'payment_pending',
+                'paid',
+                'awaiting_pickup',
+                'being_delivered',
+                'in_use',
+        ])->count();
+
+        $bike_count = Bike::where('user_id', $user->id)->count();
+
+        return view("pages.dashboard.index", compact('user', 'transaction_count', 'transaction_pending_count', 'bike_count'));
     }
 
     /**

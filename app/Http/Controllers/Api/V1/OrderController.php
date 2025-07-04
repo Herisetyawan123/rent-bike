@@ -46,52 +46,81 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function checkoutDetail($id)
     {
-        
         $user = Auth::user();
+
         try {
-            $order = $order = Transaction::where('transactions.id', $id)
-                ->where('transactions.customer_id', $user->id)
-                ->join('bikes', 'transactions.bike_id', '=', 'bikes.id')
-                ->join('bike_merks', 'bikes.bike_merk_id', '=', 'bike_merks.id')
-                ->join('bike_types', 'bikes.bike_type_id', '=', 'bike_types.id')
-                ->select(
-                    'transactions.id',
-                    'transactions.bike_id',
-                    'transactions.customer_id',
-                    'transactions.vendor_id',
-                    'bikes.price as bike_price',
-                    'bikes.photo as bike_photo',
-                    'bike_merks.name as bike_merk',
-                    'bike_types.name as bike_type',
-                    'transactions.start_date',
-                    'transactions.end_date',
-                    DB::raw('TIMESTAMPDIFF(DAY, transactions.start_date, transactions.end_date) as duration'),
-                    'transactions.total',
-                    'transactions.total_tax',
-                    'transactions.status',
-                    'transactions.final_total as grand_total',
-                    'transactions.pickup_type',
-                    'transactions.delivery_fee',
-                    'transactions.delivery_address'
-                )
-                ->firstOrFail();
+            $transaction = Transaction::with([
+                'bike.bikeMerk',
+                'bike.bikeType',
+                'bike.bikeColor',
+                'bike.bikeCapacity',
+                'vendor',
+                'customer'
+            ])
+            ->where('id', $id)
+            ->where('customer_id', $user->id)
+            ->firstOrFail();
+
+            $bike = $transaction->bike;
+
+            $response = [
+                'bike' => [
+                    'name' => $bike->bikeMerk->name ?? '',
+                    'merk' => $bike->bikeMerk->name ?? '',
+                    'color' => $bike->bikeColor->name ?? '',
+                    'type' => $bike->bikeType->name ?? '',
+                    'capacity' => $bike->bikeCapacity->capacity ?? '',
+                    'photo' => asset($bike->photo),
+                    'license_plate' => $bike->license_plate,
+                    'price' => 'Rp ' . number_format($bike->price, 0, ',', '.')
+                ],
+                'renter' => [
+                    'name' => $transaction->customer->name,
+                    'phone' => $transaction->customer->phone,
+                ],
+                'rental_info' => [
+                    'start_date' => $transaction->start_date,
+                    'end_date' => $transaction->end_date,
+                    'duration' => now()->parse($transaction->start_date)->diffInDays($transaction->end_date) . ' hari',
+                    'tujuan' => $transaction->tujuan ?? '-',
+                    'keperluan' => $transaction->keperluan ?? '-'
+                ],
+                'biaya' => [
+                    'sewa' => 'Rp ' . number_format($transaction->total, 0, ',', '.'),
+                    'delivery_fee' => 'Rp ' . number_format($transaction->delivery_fee, 0, ',', '.'),
+                    'total' => 'Rp ' . number_format($transaction->final_total, 0, ',', '.')
+                ],
+                'status' => ucfirst(str_replace('_', ' ', $transaction->status)),
+                'vendor' => [
+                    'business_name' => $transaction->vendor->business_name ?? '',
+                    'contact_person_name' => $transaction->vendor->contact_person_name ?? '',
+                    'phone' => $transaction->vendor->phone ?? '',
+                    'address' => $transaction->vendor->business_address ?? '',
+                    'tax_id' => $transaction->vendor->tax_id ?? '',
+                    'location' => [
+                        'lat' => $transaction->vendor->latitude,
+                        'lng' => $transaction->vendor->longitude,
+                    ],
+                    'photo_attachment' => asset($transaction->vendor->photo_attachment),
+                ]
+            ];
 
             return response()->json([
                 'success' => true,
-                'message' => 'Order details retrieved successfully',
-                'data' => $order,
+                'message' => 'Checkout detail retrieved successfully',
+                'data' => $response
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Order not found or you do not have permission to view this order.',
-            ])->setStatusCode(404);
+                'message' => 'Checkout detail not found or unauthorized',
+            ], 404);
         }
-
     }
+
 
     public function store(Request $request, $id)
     {

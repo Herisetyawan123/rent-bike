@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Area;
 use App\Models\Renter;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -42,12 +43,25 @@ class UserSeeder extends Seeder
             ]
         );
 
+        $area = Area::insert([
+            [
+                'name' => 'Bali Denpasar',
+            ],
+            [
+                'name' => 'Bali Badung',
+            ],
+            [
+                'name' => 'Bali Gianyar',
+            ],
+        ]);
+
         Vendor::create([
             'user_id' => $vendor->id,
             'business_name' => 'Software Host',
             'contact_person_name' => 'Heri Setyawan',
             'business_address' => 'Jauh sana sekali',
-            'national_id' => '097234987987'
+            'national_id' => '097234987987',
+            'area_id' => Area::where('name', 'Bali Denpasar')->first()->id, // Asumsi area sudah ada
         ]);
         $vendor->assignRole($vendorRole);
 

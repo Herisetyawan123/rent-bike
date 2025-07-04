@@ -75,14 +75,14 @@
 
         <p class="uppercase text-xs text-gray-600 mb-4 mt-4 tracking-wider">Akun Vendor</p>
 
-        <a href="{{ route('admin-vendor.profiles.index') }}"
+        <a href="{{ route('admin-vendor.edit') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.profiles.index') ? 'text-teal-600' : 'hover:text-teal-600' }}">
             <i class="fad fa-user-cog text-xs mr-2"></i>
             Profil Saya
         </a>
 
         <a href="{{ route('admin-vendor.notifications.index') }}"
-            class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.notifications.index') ? 'text-teal-600' : 'hover:text-teal-600' }}">
+            class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.notifications.index') ? 'text-teal-600' : 'hover:text-teal-600' }} hidden">
             <i class="fad fa-bell text-xs mr-2"></i>
             Notifikasi
         </a>

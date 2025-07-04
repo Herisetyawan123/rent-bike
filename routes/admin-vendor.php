@@ -11,11 +11,10 @@ use App\Http\Controllers\Vendor\{
     NotificationController,
     VendorAuthController
 };
-
+use App\Models\Vendor;
 
 Route::get('login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
 Route::post('login', [VendorAuthController::class, 'login']);
-
 Route::get('register', [VendorAuthController::class, 'showRegisterForm'])->name('vendor.register');
 Route::post('register', [VendorAuthController::class, 'register']);
 
@@ -40,4 +39,7 @@ Route::prefix('admin-vendor')
     Route::resource('reports', ReportController::class);
     Route::resource('profiles', ProfileController::class);
     Route::resource('notifications', NotificationController::class);
+
+    Route::get('/edit', [VendorAuthController::class, 'edit'])->name('edit');
+    Route::put('/update', [VendorAuthController::class, 'update'])->name('update');
 });
