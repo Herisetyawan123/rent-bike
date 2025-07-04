@@ -8,7 +8,7 @@ class Area extends Model
 {
     protected $guarded = ['id'];
 
-    public function vendor()
+    public function vendors()
     {
         return $this->hasMany(Vendor::class, 'area_id', 'id');
     }

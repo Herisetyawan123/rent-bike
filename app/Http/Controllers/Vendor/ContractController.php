@@ -41,11 +41,17 @@ class ContractController extends Controller
         ContractClause::create([
             'vendor_id' => Auth::id(),
             'content' => $validated['content'],
-            'order' => $validated['order'] ?? null,
+            'order' => $validated['order'] ?? $this->getNextOrder(),
         ]);
 
         return redirect()->route('admin-vendor.contracts.index')
                         ->with('success', 'Syarat kontrak berhasil ditambahkan.');
+    }
+
+    private function getNextOrder()
+    {
+        $lastClause = ContractClause::where('vendor_id', Auth::id())->orderBy('order', 'desc')->first();
+        return $lastClause ? $lastClause->order + 1 : 1;
     }
 
     /**
