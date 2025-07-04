@@ -28,7 +28,10 @@ class VendorAuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
+            // dd();
+            if(Auth::user()->hasRole('admin')) {
+                return redirect('/admin');
+            }
             return redirect()->route('admin-vendor.dashboard');
         }
 

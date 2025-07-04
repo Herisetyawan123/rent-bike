@@ -4,7 +4,8 @@ use App\Http\Controllers\Vendor\VendorAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+    // return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {

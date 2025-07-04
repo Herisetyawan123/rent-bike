@@ -13,7 +13,7 @@ use App\Http\Controllers\Vendor\{
 };
 use App\Models\Vendor;
 
-Route::get('login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
+Route::get('login', [VendorAuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [VendorAuthController::class, 'login']);
 Route::get('register', [VendorAuthController::class, 'showRegisterForm'])->name('vendor.register');
 Route::post('register', [VendorAuthController::class, 'register']);

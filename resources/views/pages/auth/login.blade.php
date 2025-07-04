@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login Vendor</title>
+  <title>Login</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-100">
 
   <div class="min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-semibold text-center mb-6">Login Vendor</h2>
+      <h2 class="text-2xl font-semibold text-center mb-6">Login</h2>
 
       @if ($errors->any())
         <div class="mb-4 text-sm text-red-600">
@@ -22,7 +22,7 @@
         </div>
       @endif
 
-      <form action="{{ route('vendor.login') }}" method="POST">
+      <form action="{{ route('login') }}" method="POST">
         @csrf
         
         <div class="mb-4">
