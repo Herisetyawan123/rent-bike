@@ -85,6 +85,7 @@ class MotorController extends Controller
         $bike->availability_status = 'available';
         $bike->status = 'requested';
         $bike->photo = $photoPath;
+        $bike->status = "accepted";
         $bike->description = $request->description;
         $bike->save();
 
