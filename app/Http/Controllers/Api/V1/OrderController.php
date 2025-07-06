@@ -101,7 +101,7 @@ class OrderController extends Controller
                 'vendor' => [
                     'business_name' => $transaction->vendor->vendor->business_name ?? '',
                     'contact_person_name' => $transaction->vendor->vendor->contact_person_name ?? '',
-                    'phone' => $transaction->vendor->vendor->phone ?? '',
+                    'phone' => $transaction->vendor->phone ?? '',
                     'address' => $transaction->vendor->vendor->business_address ?? '',
                     'area' => $transaction->vendor->vendor->area->name ?? '',
                     'tax_id' => $transaction->vendor->vendor->tax_id ?? '',
