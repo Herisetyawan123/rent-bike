@@ -124,6 +124,7 @@ class OrderController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Checkout detail not found or unauthorized',
+                'error' => $e->getMessage(),
             ], 404);
         }
     }
