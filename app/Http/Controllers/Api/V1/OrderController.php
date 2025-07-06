@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContractClause;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +59,7 @@ class OrderController extends Controller
                 'bike.bikeColor',
                 'bike.bikeCapacity',
                 'vendor',
+                'vendor.area',
                 'customer'
             ])
             ->where('id', $id)
@@ -66,6 +69,8 @@ class OrderController extends Controller
             $bike = $transaction->bike;
 
             $response = [
+                'id' => $transaction->id,
+                'contract_url' => url("/api/v1/contract/{$transaction->id}/download"),
                 'bike' => [
                     'name' => $bike->bikeMerk->name ?? '',
                     'merk' => $bike->bikeMerk->name ?? '',
@@ -98,6 +103,7 @@ class OrderController extends Controller
                     'contact_person_name' => $transaction->vendor->contact_person_name ?? '',
                     'phone' => $transaction->vendor->phone ?? '',
                     'address' => $transaction->vendor->business_address ?? '',
+                    'area' => $transaction->vendor->area->name ?? '',
                     'tax_id' => $transaction->vendor->tax_id ?? '',
                     'location' => [
                         'lat' => $transaction->vendor->latitude,
@@ -183,6 +189,35 @@ class OrderController extends Controller
             'message' => 'Order created',
             'data' => $order->load('bike'),
         ]);
+    }
+
+    public function downloadContract($id)
+    {
+        $transaction = Transaction::with(['bike.bikeMerk', 'bike.bikeType', 'customer', 'vendor'])->findOrFail($id);
+        $clauses = ContractClause::where('vendor_id', $transaction->vendor_id)->pluck('content')->toArray();
+
+        $start = \Carbon\Carbon::parse($transaction->start_date);
+        $end = \Carbon\Carbon::parse($transaction->end_date);
+        $durasi = $start->diffInDays($end) + 1;
+        // dd($clauses)
+        $pdf = Pdf::loadView('pages.contracts.print.template', [
+            'tanggal' => now()->translatedFormat('d F'),
+            'tahun' => now()->format('Y'),
+            'vendor' => $transaction->vendor,
+            'customer' => $transaction->customer,
+            'bike' => $transaction->bike,
+            'durasi' => $durasi,
+            'start_date' => $start->format('d-m-Y'),
+            'batal_hari' => 3, // bisa ubah sesuai kebijakan
+            'clauses' => $clauses, // ⬅️ ini penting
+        ]);
+
+        $customer = str_replace(' ', '_', strtolower($transaction->customer->name));
+        $tanggal  = \Carbon\Carbon::parse($transaction->start_date)->format('Ymd');
+
+        $filename = "kontrak-{$customer}-{$tanggal}-{$transaction->id}.pdf";
+
+        return $pdf->download($filename);
     }
 
 }
