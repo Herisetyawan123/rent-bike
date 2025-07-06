@@ -27,8 +27,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/orders', [OrderController::class, 'index']);
         Route::get('/orders/{id}', [OrderController::class, 'show']);
+        Route::get('/contract/{id}/download', [OrderController::class, 'downloadContract']);
         Route::post('/orders/{bike}', [OrderController::class, 'store']);
-        Route::get('/contract/{id}/download', [OrderController::class, 'downloadContract'])
         Route::post('/logout', [AuthController::class, 'register']);
     });
 });
