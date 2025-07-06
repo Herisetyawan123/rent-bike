@@ -59,7 +59,6 @@ class OrderController extends Controller
                 'bike.bikeColor',
                 'bike.bikeCapacity',
                 'vendor',
-                'vendor.area',
                 'vendor.vendor.area',
                 'customer'
             ])
