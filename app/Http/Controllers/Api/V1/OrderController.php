@@ -60,6 +60,7 @@ class OrderController extends Controller
                 'bike.bikeCapacity',
                 'vendor',
                 'vendor.area',
+                'vendor.vendor.area',
                 'customer'
             ])
             ->where('id', $id)
