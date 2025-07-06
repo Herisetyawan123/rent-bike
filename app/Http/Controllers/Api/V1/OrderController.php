@@ -72,7 +72,7 @@ class OrderController extends Controller
                     'color' => $bike->bikeColor->name ?? '',
                     'type' => $bike->bikeType->name ?? '',
                     'capacity' => $bike->bikeCapacity->capacity ?? '',
-                    'photo' => asset($bike->photo),
+                    'photo' => asset("storage/".$bike->photo),
                     'license_plate' => $bike->license_plate,
                     'price' => 'Rp ' . number_format($bike->price, 0, ',', '.')
                 ],
@@ -103,7 +103,7 @@ class OrderController extends Controller
                         'lat' => $transaction->vendor->latitude,
                         'lng' => $transaction->vendor->longitude,
                     ],
-                    'photo_attachment' => asset($transaction->vendor->photo_attachment),
+                    'photo_attachment' => !isset($transaction->vendor->photo_attachment) ? asset("img/default.png") : asset("storage/".$transaction->vendor->photo_attachment),
                 ]
             ];
 
