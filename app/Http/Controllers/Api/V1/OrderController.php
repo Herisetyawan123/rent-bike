@@ -46,7 +46,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function checkoutDetail($id)
+    public function show($id)
     {
         $user = Auth::user();
 
