@@ -69,7 +69,7 @@ class OrderController extends Controller
                 'bike' => [
                     'name' => $bike->bikeMerk->name ?? '',
                     'merk' => $bike->bikeMerk->name ?? '',
-                    'color' => $bike->bikeColor->name ?? '',
+                    'color' => $bike->bikeColor->color ?? '',
                     'type' => $bike->bikeType->name ?? '',
                     'capacity' => $bike->bikeCapacity->capacity ?? '',
                     'photo' => asset("storage/".$bike->photo),
@@ -84,8 +84,8 @@ class OrderController extends Controller
                     'start_date' => $transaction->start_date,
                     'end_date' => $transaction->end_date,
                     'duration' => now()->parse($transaction->start_date)->diffInDays($transaction->end_date) . ' hari',
-                    'tujuan' => $transaction->tujuan ?? '-',
-                    'keperluan' => $transaction->keperluan ?? '-'
+                    'tujuan' => $transaction->tujuan ?? null,
+                    'keperluan' => $transaction->keperluan ?? null
                 ],
                 'biaya' => [
                     'sewa' => 'Rp ' . number_format($transaction->total, 0, ',', '.'),
