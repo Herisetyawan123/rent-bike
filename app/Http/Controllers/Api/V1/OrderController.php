@@ -99,17 +99,17 @@ class OrderController extends Controller
                 ],
                 'status' => ucfirst(str_replace('_', ' ', $transaction->status)),
                 'vendor' => [
-                    'business_name' => $transaction->vendor->business_name ?? '',
-                    'contact_person_name' => $transaction->vendor->contact_person_name ?? '',
-                    'phone' => $transaction->vendor->phone ?? '',
-                    'address' => $transaction->vendor->business_address ?? '',
-                    'area' => $transaction->vendor->area->name ?? '',
-                    'tax_id' => $transaction->vendor->tax_id ?? '',
+                    'business_name' => $transaction->vendor->vendor->business_name ?? '',
+                    'contact_person_name' => $transaction->vendor->vendor->contact_person_name ?? '',
+                    'phone' => $transaction->vendor->vendor->phone ?? '',
+                    'address' => $transaction->vendor->vendor->business_address ?? '',
+                    'area' => $transaction->vendor->vendor->area->name ?? '',
+                    'tax_id' => $transaction->vendor->vendor->tax_id ?? '',
                     'location' => [
-                        'lat' => $transaction->vendor->latitude,
-                        'lng' => $transaction->vendor->longitude,
+                        'lat' => $transaction->vendor->vendor->latitude,
+                        'lng' => $transaction->vendor->vendor->longitude,
                     ],
-                    'photo_attachment' => !isset($transaction->vendor->photo_attachment) ? asset("img/default.png") : asset("storage/".$transaction->vendor->photo_attachment),
+                    'photo_attachment' => !isset($transaction->vendor->vendor->photo_attachment) ? asset("img/default.png") : asset("storage/".$transaction->vendor->vendor->photo_attachment),
                 ]
             ];
 
