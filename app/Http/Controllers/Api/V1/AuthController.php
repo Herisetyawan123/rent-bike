@@ -112,6 +112,20 @@ class AuthController extends Controller
         ]);
     }
 
+    public function checkEligibility(Request $request)
+    {
+        $user = $request->user()->load('renter');
+        $eligibility = $user->checkEligibility();
+
+        return response()->json([
+            'status' => $eligibility['is_eligible'],
+            'message' => $eligibility['is_eligible']
+                ? 'Semua data sudah lengkap.'
+                : 'Ada data yang belum lengkap.',
+            'data' => $eligibility,
+        ]);
+    }
+
 
     public function register(Request $request)
     {

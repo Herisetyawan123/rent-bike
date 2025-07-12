@@ -104,19 +104,19 @@ class BikeController extends Controller
      */
     public function show(string $id)
     {
-        $bike = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->find($id);
+        $bike = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity', 'addOns'])->find($id);
 
-            if (!$bike) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Bike not found'
-                ], 404);
-            }
-
+        if (!$bike) {
             return response()->json([
-                'success' => true,
-                'data' => $bike
-            ], 200);
+                'success' => false,
+                'message' => 'Bike not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $bike
+        ], 200);
     }
 
     /**

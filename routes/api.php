@@ -31,6 +31,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/orders/{bike}', [OrderController::class, 'store']);
         Route::post('/logout', [AuthController::class, 'register']);
         Route::put('/profile', [AuthController::class, 'update']);    
+        Route::get('/eligibility', [AuthController::class, 'checkEligibility']);
+
     });
 });
 
