@@ -22,7 +22,7 @@ class BikeController extends Controller
         $search = request()->get('search');
 
         $query = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->latest();
-
+        $query->where('availability_status', 'available');
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->orWhereHas('bikeMerk', function ($q) use ($search) {
