@@ -82,12 +82,31 @@ class AuthController extends Controller
 
         // Generate token
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->load('renter');
 
         return response()->json([
             'message' => 'Login berhasil',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'photo' => $user->photo,
+                'is_requested' => $user->is_requested,
+                'renter' => [
+                    'national_id' => $user->renter->national_id ?? null,
+                    'driver_license_number' => $user->renter->driver_license_number ?? null,
+                    'gender' => $user->renter->gender ?? null,
+                    'ethnicity' => $user->renter->ethnicity ?? null,
+                    'nationality' => $user->renter->nationality ?? null,
+                    'birth_date' => $user->renter->birth_date ?? null,
+                    'address' => $user->renter->address ?? null,
+                    'current_address' => $user->renter->current_address ?? null,
+                    'marital_status' => $user->renter->marital_status ?? null,
+                ],
+            ]
         ]);
     }
 

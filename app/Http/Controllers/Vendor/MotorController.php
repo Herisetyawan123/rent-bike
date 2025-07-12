@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Models\AddOn;
 use App\Models\Bike;
 use App\Models\BikeCapacity;
 use App\Models\BikeColor;
@@ -32,7 +33,7 @@ class MotorController extends Controller
                         ->where("user_id", Auth::user()->id)
                         ->get();
 
-        dd($motors);
+
         return view('pages.motor.index', compact('motors'));
     }
 
@@ -46,6 +47,7 @@ class MotorController extends Controller
             'types' => BikeType::all(),
             'colors' => BikeColor::all(),
             'capacities' => BikeCapacity::all(),
+            'add_ons' => AddOn::all(),
         ]);
     }
 
@@ -88,7 +90,9 @@ class MotorController extends Controller
         $bike->status = "accepted";
         $bike->description = $request->description;
         $bike->save();
-
+        if ($request->has('add_on')) {
+            $bike->addOns()->attach($request->add_on);
+        }
         return redirect()->route('admin-vendor.motors.index')
             ->with('success', 'Motor berhasil ditambahkan!');
     }
@@ -106,20 +110,22 @@ class MotorController extends Controller
      */
     public function edit(string $id)
     {
-        $bike = Bike::findOrFail($id);
+        $bike = Bike::with("addOns")->findOrFail($id);
 
         // Load data untuk select-option
         $merks = BikeMerk::all();
         $types = BikeType::all();
         $colors = BikeColor::all();
         $capacities = BikeCapacity::all();
+         $addOns = AddOn::all();
 
         return view('pages.motor.edit', compact(
             'bike',
             'merks',
             'types',
             'colors',
-            'capacities'
+            'capacities',
+            'addOns',
         ));
     }
 
@@ -168,6 +174,8 @@ class MotorController extends Controller
             'description'      => $request->description,
         ]);
 
+        $bike->addOns()->sync($request->add_on ?? []);
+        
         return redirect()->route('admin-vendor.motors.index')
                         ->with('success', 'Motor berhasil diupdate!');
     }

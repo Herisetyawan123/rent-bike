@@ -136,15 +136,28 @@ class OrderController extends Controller
             'end_date' => 'required|date|after:start_date',
             'pickup_type' => 'required|in:pickup_self,delivery',
         ]);
-        $user = auth()->user();
+        $user = Auth::user();
+        
+        DB::beginTransaction();
+        try {
+        $bike = \App\Models\Bike::findOrFail($id);
+        if($bike->availability_status !== 'available') {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Bike is not available for rent',
+                'data' => null,
+            ], 400);
+        }
+
+        $bike->availability_status = 'rented';
+        $bike->save();
+        
         // hitung lama sewa
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
         $days = $startDate->diffInDays($endDate) ?: 1;
 
-        $bike = \App\Models\Bike::findOrFail($id);
-        $bike->availability_status = 'rented';
-        $bike->save();
+
         $deliveryFee = $data['delivery_fee'] ?? 0;
 
         $marginValue = getSetting('app_margin');
@@ -185,11 +198,22 @@ class OrderController extends Controller
             'delivery_address' => $request->pickup_type === 'delivery' ? $user->address : null,
             'status' => 'payment_pending',
         ]);
-
+        DB::commit();
+        
         return response()->json([
             'message' => 'Order created',
             'data' => $order->load('bike'),
         ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create order',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+       
     }
 
     public function downloadContract($id)

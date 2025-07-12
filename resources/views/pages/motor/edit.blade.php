@@ -66,10 +66,30 @@
       </div>
 
       <!-- Harga -->
-      <div>
-        <label for="price" class="block mb-1 text-sm font-medium text-gray-700">Harga Sewa</label>
-        <input type="number" name="price" id="price" value="{{ $bike->price }}"
-               class="w-full px-4 py-2 border rounded-md" />
+      <div class="flex gap-10">
+        <div class="flex-1">
+          <label for="price" class="block mb-1 text-sm font-medium text-gray-700">Harga Sewa</label>
+          <input type="number" name="price" id="price" value="{{ $bike->price }}"
+                 class="w-full px-4 py-2 border rounded-md" />
+        </div>
+        <div class="flex-1">
+          <label class="block mb-1 text-sm font-medium text-gray-700">Add On</label>
+          @foreach ($addOns as $item)
+            <div class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="add_on_{{ $item->id }}"
+                name="add_on[]"
+                value="{{ $item->id }}"
+                {{ $bike->addOns->contains($item->id) ? 'checked' : '' }}
+                class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              />
+              <label for="add_on_{{ $item->id }}" class="text-sm text-gray-700">
+                {{ $item->name }} (Rp. {{ number_format($item->price, 0, ',', '.') }})
+              </label>
+            </div>
+          @endforeach
+        </div>
       </div>
 
       <!-- Upload Foto -->

@@ -35,14 +35,23 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $bikes = Bike::with(['bikeMerk', 'bikeType']) // tambahkan relasi jika perlu
+        $bikes = Bike::with(['bikeMerk', 'bikeType', 'addOns']) // tambahkan relasi jika perlu
                 ->where('user_id', Auth::id())
                 ->get();
 
         // Ambil semua user yang merupakan customer
         $customers = User::role('renter')->get();
+
         return view('pages.transactions.create', compact('bikes', 'customers'));
     }
+
+    // public function create()
+    // {
+    //     $bikes = Bike::with('bikeMerk', 'addOns')->get(); // Motor + Merk + Add-ons
+    //     $customers = User::role('renter')->get();
+
+    //     return view('pages.transactions.cashier', compact('bikes', 'customers'));
+    // }
 
     /**
      * Store a newly created resource in storage.
