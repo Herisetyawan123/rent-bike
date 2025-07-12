@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Renter;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -202,7 +203,7 @@ class AuthController extends Controller
 
     public function update(Request $request)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
