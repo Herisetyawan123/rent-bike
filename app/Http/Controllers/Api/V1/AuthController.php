@@ -25,11 +25,13 @@ class AuthController extends Controller
         $phone = preg_replace('/^0/', '62', $request->phone); // Format 62
         $otp = rand(100000, 999999);
 
+        $user = User::where('phone', $phone)->first();
+
         // Cari user atau buat baru
         $user = User::updateOrCreate(
             ['phone' => $phone],
             [
-                'name' => 'Guest_' . $phone, // Default name
+                'name' => $user != null ? $user->name : 'Guest_' . $phone, 
                 'password' => bcrypt(Str::random(10)), // Random password, jarang dipakai
                 'otp' => $otp,
                 'otp_expires_at' => now()->addMinutes(5),
