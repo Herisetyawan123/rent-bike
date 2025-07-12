@@ -76,4 +76,43 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(Renter::class);
     }
+
+    public function checkEligibility(): array
+    {
+        $missing = [];
+
+        if (empty($this->name)) $missing[] = 'name';
+        if (empty($this->email)) $missing[] = 'email';
+        if (empty($this->phone)) $missing[] = 'phone';
+
+        if (!$this->renter) {
+            $missing = array_merge($missing, [
+                'renter.national_id',
+                'renter.driver_license_number',
+                'renter.gender',
+                'renter.ethnicity',
+                'renter.nationality',
+                'renter.birth_date',
+                'renter.address',
+                'renter.current_address',
+                'renter.marital_status',
+            ]);
+        } else {
+            if (empty($this->renter->national_id)) $missing[] = 'renter.national_id';
+            if (empty($this->renter->driver_license_number)) $missing[] = 'renter.driver_license_number';
+            if (empty($this->renter->gender)) $missing[] = 'renter.gender';
+            if (empty($this->renter->ethnicity)) $missing[] = 'renter.ethnicity';
+            if (empty($this->renter->nationality)) $missing[] = 'renter.nationality';
+            if (empty($this->renter->birth_date)) $missing[] = 'renter.birth_date';
+            if (empty($this->renter->address)) $missing[] = 'renter.address';
+            if (empty($this->renter->current_address)) $missing[] = 'renter.current_address';
+            if (empty($this->renter->marital_status)) $missing[] = 'renter.marital_status';
+        }
+
+        return [
+            'is_eligible' => count($missing) === 0,
+            'missing_fields' => $missing,
+        ];
+    }
+
 }
