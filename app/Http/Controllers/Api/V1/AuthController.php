@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -196,6 +197,60 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
+
+            // Renter fields
+            'national_id' => 'nullable|string|max:100',
+            'driver_license_number' => 'nullable|string|max:100',
+            'gender' => 'nullable|in:male,female,other',
+            'ethnicity' => 'nullable|string|max:100',
+            'nationality' => 'nullable|string|max:100',
+            'birth_date' => 'nullable|date',
+            'address' => 'nullable|string',
+            'current_address' => 'nullable|string',
+            'marital_status' => 'nullable|in:single,married,divorced,widowed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Update user table
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ]);
+
+        // Update renter table (relasi hasOne)
+        $user->renter()->updateOrCreate([], [
+            'national_id' => $request->national_id,
+            'driver_license_number' => $request->driver_license_number,
+            'gender' => $request->gender,
+            'ethnicity' => $request->ethnicity,
+            'nationality' => $request->nationality,
+            'birth_date' => $request->birth_date,
+            'address' => $request->address,
+            'current_address' => $request->current_address,
+            'marital_status' => $request->marital_status,
+        ]);
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui',
+            'user' => $user->load('renter'), // biar renter ikut dikirim juga
         ]);
     }
 
