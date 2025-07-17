@@ -38,6 +38,9 @@ class AuthController extends Controller
             ]
         );
 
+        if(!$user->renter) {
+            $user->renter()->create([]);
+        }
         // Kirim OTP pakai Fonnte
         $message = "Kode OTP kamu: *$otp* (berlaku 5 menit)";
         Http::withHeaders([
@@ -216,6 +219,7 @@ class AuthController extends Controller
         ]);
     }
 
+    // Get user profile
     public function profile(Request $request)
     {
         $user = $request->user()->load('renter');
@@ -236,11 +240,18 @@ class AuthController extends Controller
                     'address' => $user->renter->address ?? null,
                     'current_address' => $user->renter->current_address ?? null,
                 ],
+                'documents' => [
+                    'national_id_front' => $user->getFirstMediaUrl('national_id_front'),
+                    'national_id_back' => $user->getFirstMediaUrl('national_id_back'),
+                    'driving_license_front' => $user->getFirstMediaUrl('driving_license_front'),
+                    'driving_license_back' => $user->getFirstMediaUrl('driving_license_back'),
+                    'selfie_with_id' => $user->getFirstMediaUrl('selfie_with_id'),
+                ],
             ]
         ]);
     }
 
-
+    // update user profile
     public function update(Request $request)
     {
         $user = Auth::user();

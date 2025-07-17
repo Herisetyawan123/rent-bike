@@ -82,16 +82,13 @@ class RenterResource extends Resource
     {
     return $table
         ->columns([
+            TextColumn::make('user.name')->label('name'),
             TextColumn::make('user.email')->label('Email'),
             TextColumn::make('nik_passport')->label('NIK / Passport'),
             TextColumn::make('driver_license_number')->label('Driver License'),
-            TextColumn::make('gender')->label('Gender'),
-            TextColumn::make('ethnicity')->label('Ethnicity'),
-            TextColumn::make('nationality')->label('Nationality'),
             TextColumn::make('birth_date')->date()->label('Birth Date'),
             TextColumn::make('address')->label('Address'),
             TextColumn::make('current_address')->label('Current Address'),
-            TextColumn::make('marital_status')->label('Marital Status'),
             TextColumn::make('phone')->label('Phone'),
             Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
         ])
@@ -105,6 +102,14 @@ class RenterResource extends Resource
         ->bulkActions([
             Tables\Actions\DeleteBulkAction::make(),
         ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('user', function ($query) {
+                $query->where('is_requested', false);
+            });
     }
 
     public static function getRelations(): array
