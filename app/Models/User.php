@@ -124,8 +124,8 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         }
 
         return [
-            'is_eligible' => count($missing) === 0,
-            'missing_fields' => $missing,
+            'is_eligible' => count($missing) === 0 && $this->is_requested,
+            'missing_fields' => $this->is_requested ? ["Belum disetujui"] : $missing,
         ];
     }
 

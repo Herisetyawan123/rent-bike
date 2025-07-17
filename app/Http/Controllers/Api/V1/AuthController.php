@@ -123,7 +123,7 @@ class AuthController extends Controller
         $eligibility = $user->checkEligibility();
 
         return response()->json([
-            'status' => $eligibility['is_eligible'] && $user->is_requested,
+            'status' => $eligibility['is_eligible'],
             'message' => $eligibility['is_eligible']
                 ? ($user->is_requested ? 'Masih menunggu persetujuan admin' : 'Data sudah lengkap.')
                 : 'Ada data yang belum lengkap.',
