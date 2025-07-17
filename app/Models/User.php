@@ -67,6 +67,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_requested' => 'boolean',
         ];
     }
 
@@ -124,7 +125,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         }
 
         return [
-            'is_eligible' => $this->is_requested == 1,
+            'is_eligible' => $this->is_requested,
             'missing_fields' => $this->is_requested ? ["Belum disetujui"] : $missing,
         ];
     }
