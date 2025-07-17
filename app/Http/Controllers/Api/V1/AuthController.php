@@ -102,13 +102,13 @@ class AuthController extends Controller
                 'renter' => [
                     'national_id' => $user->renter->national_id ?? null,
                     'driver_license_number' => $user->renter->driver_license_number ?? null,
-                    'gender' => $user->renter->gender ?? null,
-                    'ethnicity' => $user->renter->ethnicity ?? null,
-                    'nationality' => $user->renter->nationality ?? null,
+                    // 'gender' => $user->renter->gender ?? null,
+                    // 'ethnicity' => $user->renter->ethnicity ?? null,
+                    // 'nationality' => $user->renter->nationality ?? null,
                     'birth_date' => $user->renter->birth_date ?? null,
                     'address' => $user->renter->address ?? null,
                     'current_address' => $user->renter->current_address ?? null,
-                    'marital_status' => $user->renter->marital_status ?? null,
+                    // 'marital_status' => $user->renter->marital_status ?? null,
                 ],
             ]
         ]);
@@ -127,7 +127,6 @@ class AuthController extends Controller
             'data' => $eligibility,
         ]);
     }
-
 
     public function register(Request $request)
     {
@@ -217,6 +216,31 @@ class AuthController extends Controller
         ]);
     }
 
+    public function profile(Request $request)
+    {
+        $user = $request->user()->load('renter');
+
+        return response()->json([
+            'message' => 'User profile fetched successfully',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'photo' => $user->photo,
+                'is_requested' => $user->is_requested,
+                'renter' => [
+                    'national_id' => $user->renter->national_id ?? null,
+                    'driver_license_number' => $user->renter->driver_license_number ?? null,
+                    'birth_date' => $user->renter->birth_date ?? null,
+                    'address' => $user->renter->address ?? null,
+                    'current_address' => $user->renter->current_address ?? null,
+                ],
+            ]
+        ]);
+    }
+
+
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -227,11 +251,11 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
 
             // Renter fields
-            'national_id' => 'nullable|string|max:100',
+            // 'national_id' => 'nullable|string|max:100',
             'driver_license_number' => 'nullable|string|max:100',
-            'gender' => 'nullable|in:male,female,other',
-            'ethnicity' => 'nullable|string|max:100',
-            'nationality' => 'nullable|string|max:100',
+            // 'gender' => 'nullable|in:male,female,other',
+            // 'ethnicity' => 'nullable|string|max:100',
+            // 'nationality' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
             'address' => 'nullable|string',
             'current_address' => 'nullable|string',
@@ -256,21 +280,99 @@ class AuthController extends Controller
         $user->renter()->updateOrCreate([], [
             'national_id' => $request->national_id,
             'driver_license_number' => $request->driver_license_number,
-            'gender' => $request->gender,
-            'ethnicity' => $request->ethnicity,
-            'nationality' => $request->nationality,
+            // 'gender' => $request->gender,
+            // 'ethnicity' => $request->ethnicity,
+            // 'nationality' => $request->nationality,
             'birth_date' => $request->birth_date,
             'address' => $request->address,
             'current_address' => $request->current_address,
-            'marital_status' => $request->marital_status,
+            // 'marital_status' => $request->marital_status,
         ]);
 
         return response()->json([
             'message' => 'Profil berhasil diperbarui',
-            'user' => $user->load('renter'), // biar renter ikut dikirim juga
+            'user' => $user->load('renter'),
         ]);
     }
 
+    // upload national ID
+    public function uploadNationalId(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'front' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'back'  => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        $user->addMedia($request->file('front'))
+            ->usingFileName('national_id_front_' . $user->id . '.' . $request->file('front')->getClientOriginalExtension())
+            ->toMediaCollection('national_id_front');
+
+        $user->addMedia($request->file('back'))
+            ->usingFileName('national_id_back_' . $user->id . '.' . $request->file('back')->getClientOriginalExtension())
+            ->toMediaCollection('national_id_back');
+
+        return response()->json(['message' => 'National ID uploaded successfully.']);
+    }
+
+    public function uploadDrivingLicense(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'front' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'back'  => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        $user->addMedia($request->file('front'))
+            ->usingFileName('driving_license_front_' . $user->id . '.' . $request->file('front')->getClientOriginalExtension())
+            ->toMediaCollection('driving_license_front');
+
+        $user->addMedia($request->file('back'))
+            ->usingFileName('driving_license_back_' . $user->id . '.' . $request->file('back')->getClientOriginalExtension())
+            ->toMediaCollection('driving_license_back');
+
+        return response()->json(['message' => 'Driving license uploaded successfully.']);
+    }
+
+    public function uploadSelfieWithId(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'selfie' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        $user->addMedia($request->file('selfie'))
+            ->usingFileName('selfie_with_id_' . $user->id . '.' . $request->file('selfie')->getClientOriginalExtension())
+            ->toMediaCollection('selfie_with_id');
+
+        return response()->json(['message' => 'Selfie uploaded successfully.']);
+    }
+
+    
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

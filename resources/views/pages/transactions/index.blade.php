@@ -121,35 +121,35 @@
 @endsection
 
 @push('scripts')
-<script>
-function statusModal() {
-  return {
-    show: false,
-    id: null,
-    currentStatus: '',
-    statuses: [
-      'payment_pending',
-      'paid',
-      'awaiting_pickup',
-      'being_delivered',
-      'in_use',
-      'cancelled',
-      'completed'
-    ],
-    open(id, status) {
-      this.id = id;
-      this.currentStatus = status;
-      this.show = true;
-    },
-    close() {
-      this.show = false;
-      this.id = null;
-      this.currentStatus = '';
-    },
-    label(status) {
-      return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  <script>
+  function statusModal() {
+    return {
+      show: false,
+      id: null,
+      currentStatus: '',
+      statuses: [
+        'payment_pending',
+        'paid',
+        'awaiting_pickup',
+        'being_delivered',
+        'in_use',
+        'cancelled',
+        'completed'
+      ],
+      open(id, status) {
+        this.id = id;
+        this.currentStatus = status;
+        this.show = true;
+      },
+      close() {
+        this.show = false;
+        this.id = null;
+        this.currentStatus = '';
+      },
+      label(status) {
+        return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
     }
   }
-}
-</script>
+  </script>
 @endpush

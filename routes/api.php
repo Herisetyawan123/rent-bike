@@ -30,9 +30,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/contract/{id}/download', [OrderController::class, 'downloadContract']);
         Route::post('/orders/{bike}', [OrderController::class, 'store']);
         Route::post('/logout', [AuthController::class, 'register']);
-        Route::put('/profile', [AuthController::class, 'update']);    
         Route::get('/eligibility', [AuthController::class, 'checkEligibility']);
 
+        // update user profile
+        Route::get('/profile', [AuthController::class, 'profile']);    
+        Route::put('/profile', [AuthController::class, 'update']);    
+        Route::post('/profile/upload-national-id', [AuthController::class, 'uploadNationalId']);
+        Route::post('/profile/upload-driver-license', [AuthController::class, 'uploadDrivingLicense']);
+        Route::post('/profile/upload-selfie-with-id', [AuthController::class, 'uploadSelfieWithId']);
     });
 });
 

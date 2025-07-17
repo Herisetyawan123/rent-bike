@@ -11,9 +11,12 @@ use Spatie\Permission\Traits\HasRoles;
 
 use Filament\Models\Contracts\FilamentUser;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasMedia
 {
+    use InteractsWithMedia;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -32,6 +35,17 @@ class User extends Authenticatable implements FilamentUser
         'photo',
         'is_requested',
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('national_id_front')->singleFile();
+        $this->addMediaCollection('national_id_back')->singleFile();
+
+        $this->addMediaCollection('driver_license_front')->singleFile();
+        $this->addMediaCollection('driver_license_back')->singleFile();
+
+        $this->addMediaCollection('selfie_with_id')->singleFile();
+    }
 
     /**
      * The attributes that should be hidden for serialization.

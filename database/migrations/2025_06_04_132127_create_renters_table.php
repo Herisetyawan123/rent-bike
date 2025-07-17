@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('national_id')->nullable();        // NIK / Passport
+            $table->string('photo_national_id')->nullable();        // NIK / Passport
             $table->string('driver_license_number')->nullable();  // Nomor SIM
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('ethnicity')->nullable();           // Suku
