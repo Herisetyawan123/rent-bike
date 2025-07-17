@@ -91,14 +91,34 @@
   
         <div class="flex-1">
           <label for="add_on" class="block mb-1 text-sm font-medium text-gray-700">Add On</label>
-          @foreach ($add_ons as $item)
-          <div class="flex items-center space-x-2">
-              <input type="checkbox" id="add_on" name="add_on[]" value="{{ $item->id }}" class="h-4 w-4 text-blue-600 border-gray-300 rounded" />
-              <label for="add_on" class="text-sm text-gray-700">
-                {{ $item->name }} (Rp. {{ number_format($item->price, 0, ',', '.') }})
-              </label>
-            </div>
-            @endforeach
+ @foreach ($add_ons as $item)
+  <div class="flex items-center space-x-2 mb-3">
+    <input 
+      type="checkbox" 
+      id="add_on_{{ $item->id }}" 
+      name="add_on[id]" 
+      value="{{ $item->id }}" 
+      class="h-4 w-4 text-blue-600 border-gray-300 rounded toggle-add-on" 
+      data-target="#add_on_price_{{ $item->id }}" 
+    />
+
+    <div class="flex flex-col">
+      <label for="add_on_{{ $item->id }}" class="text-sm text-gray-700">
+        {{ $item->name }}
+      </label>
+
+      <input 
+        type="text" 
+        name="add_on[price]" 
+        id="add_on_price_{{ $item->id }}" 
+        value="" 
+        class="w-24 px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+        disabled 
+      />
+    </div>
+  </div>
+@endforeach
+
         </div>
       </div>
       <!-- Upload Foto -->
@@ -126,3 +146,27 @@
   </form>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".toggle-add-on");
+
+    checkboxes.forEach((checkbox) => {
+      const targetInput = document.querySelector(checkbox.dataset.target);
+
+      // Initial state (disabled)
+      if (targetInput) {
+        targetInput.disabled = !checkbox.checked;
+      }
+
+      // On toggle
+      checkbox.addEventListener("change", function () {
+        if (targetInput) {
+          targetInput.disabled = !this.checked;
+        }
+      });
+    });
+  });
+</script>
+@endpush

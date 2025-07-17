@@ -16,15 +16,12 @@ class AddonSeeder extends Seeder
         AddOn::insert([
                 [
                     'name' => 'Helm',
-                    'price' => 1000,
                 ],
                 [
                     'name' => 'Sarung Tangan',
-                    'price' => 1000,
                 ],
                 [
                     'name' => 'Jaket',
-                    'price' => 1000,
                 ],
             ]);
     }

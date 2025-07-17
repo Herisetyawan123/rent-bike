@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bike_id')->constrained()->cascadeOnDelete();
             $table->foreignId('add_on_id')->constrained('add_ons')->cascadeOnDelete();
+            $table->decimal('price', 10, 2)->default(0.00);
             $table->timestamps();
         });
     }

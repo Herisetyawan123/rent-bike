@@ -23,8 +23,12 @@ class Bike extends Model
 
     public function addOns()
     {
-        return $this->belongsToMany(AddOn::class, 'addon_bikes');
+        return $this->belongsToMany(AddOn::class, 'addon_bikes')
+        ->withPivot('price')
+                ->withTimestamps();
     }
+
+    
 
     public function bikeMerk()
     {

@@ -74,21 +74,40 @@
         </div>
         <div class="flex-1">
           <label class="block mb-1 text-sm font-medium text-gray-700">Add On</label>
-          @foreach ($addOns as $item)
-            <div class="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="add_on_{{ $item->id }}"
-                name="add_on[]"
-                value="{{ $item->id }}"
-                {{ $bike->addOns->contains($item->id) ? 'checked' : '' }}
-                class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-              />
-              <label for="add_on_{{ $item->id }}" class="text-sm text-gray-700">
-                {{ $item->name }} (Rp. {{ number_format($item->price, 0, ',', '.') }})
-              </label>
-            </div>
-          @endforeach
+          
+
+@foreach ($addOns as $item)
+  @php
+    $selectedAddOn = $bike->addOns->firstWhere('id', $item->id);
+  @endphp
+
+  <div class="flex items-center space-x-2 mb-3">
+    <input 
+      type="checkbox" 
+      id="add_on_{{ $item->id }}" 
+      name="add_on[{{ $item->id }}][id]" 
+      value="{{ $item->id }}" 
+      class="h-4 w-4 text-blue-600 border-gray-300 rounded toggle-add-on"
+      data-target="#add_on_price_{{ $item->id }}"
+      {{ $selectedAddOn ? 'checked' : '' }}
+    >
+
+    <div class="flex flex-col">
+      <label for="add_on_{{ $item->id }}" class="text-sm text-gray-700">
+        {{ $item->name }}
+      </label>
+
+      <input 
+        type="text" 
+        name="add_on[{{ $item->id }}][price]" 
+        id="add_on_price_{{ $item->id }}" 
+        value="{{ $selectedAddOn ? $selectedAddOn->pivot->price : '' }}" 
+        class="w-24 px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+        {{ $selectedAddOn ? '' : 'disabled' }}
+      />
+    </div>
+  </div>
+@endforeach
         </div>
       </div>
 
@@ -121,3 +140,28 @@
   </form>
 </div>
 @endsection
+
+
+@push('scripts')
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".toggle-add-on");
+
+    checkboxes.forEach((checkbox) => {
+      const targetInput = document.querySelector(checkbox.dataset.target);
+
+      // Initial state (disabled)
+      if (targetInput) {
+        targetInput.disabled = !checkbox.checked;
+      }
+
+      // On toggle
+      checkbox.addEventListener("change", function () {
+        if (targetInput) {
+          targetInput.disabled = !this.checked;
+        }
+      });
+    });
+  });
+</script>
+@endpush

@@ -91,7 +91,10 @@ class MotorController extends Controller
         $bike->description = $request->description;
         $bike->save();
         if ($request->has('add_on')) {
-            $bike->addOns()->attach($request->add_on);
+            $addon = $request->add_on;
+            $bike->addOns()->attach([
+                $addon['id'] => ['price' => $addon['price']],
+            ]);
         }
         return redirect()->route('admin-vendor.motors.index')
             ->with('success', 'Motor berhasil ditambahkan!');
@@ -174,8 +177,21 @@ class MotorController extends Controller
             'description'      => $request->description,
         ]);
 
-        $bike->addOns()->sync($request->add_on ?? []);
-        
+            // ✅ Update add_ons
+        if ($request->has('add_on')) {
+            $attachData = [];
+
+            foreach ($request->add_on as $addOn) {
+                $attachData[$addOn['id']] = ['price' => $addOn['price']];
+            }
+
+            // Sinkronisasi add_on + price
+            $bike->addOns()->sync($attachData);
+        } else {
+            // Kalau nggak ada add_on yang dicentang, hapus semua relasinya
+            $bike->addOns()->detach();
+        }
+
         return redirect()->route('admin-vendor.motors.index')
                         ->with('success', 'Motor berhasil diupdate!');
     }
