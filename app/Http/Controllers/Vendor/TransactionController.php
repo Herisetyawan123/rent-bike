@@ -67,6 +67,9 @@ class TransactionController extends Controller
             'pickup_type'      => 'required|in:pickup_self,delivery',
             'delivery_address' => 'nullable|string',
             'delivery_fee'     => 'nullable|numeric|min:0',
+            'add_ons'          => 'nullable|array',
+            'add_ons.*'        => 'exists:addon_bikes,id',
+
         ]);
 
         // Ambil data motor
@@ -79,6 +82,15 @@ class TransactionController extends Controller
         $endDate = Carbon::parse($validated['end_date']);
         $days = $startDate->diffInDays($endDate) + 1;
 
+        // Jika ada add-ons, ambil total biayanya
+        $addOnsTotal = 0;
+        if (isset($validated['add_ons']) && is_array($validated['add_ons'])) {
+            $addOns = \App\Models\AddonBike::whereIn('id', $validated['add_ons'])->get();
+            $addOnsTotal = $addOns->sum('price');
+        }
+
+        
+
         // Ambil settingan margin & tax
         $marginValue = getSetting('app_margin');
         $marginType = getSetting('app_margin_type'); // 'percentage' atau 'flat'
@@ -86,6 +98,9 @@ class TransactionController extends Controller
 
         // Hitung base price
         $basePrice = $bike->price * $days;
+
+        // Tambahkan biaya add-ons ke harga dasar
+        $basePrice += $addOnsTotal;
 
         // Hitung margin
         $margin = $marginType === 'percentage'

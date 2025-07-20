@@ -135,6 +135,10 @@ class OrderController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'pickup_type' => 'required|in:pickup_self,delivery',
+            'add_ons' => 'nullable|array',
+            'add_ons.*' => 'exists:add_ons,id',
+            'delivery_fee' => 'nullable|numeric|min:0',
+            'delivery_address' => 'required_if:pickup_type,delivery|string|max:255',
         ]);
         $user = Auth::user();
         
@@ -166,6 +170,16 @@ class OrderController extends Controller
 
         $basePrice = $bike->price * $days;
 
+        $addOnsTotal = 0;
+        // Jika ada add-ons, tambahkan biayanya
+        if ($request->has('add_ons') && is_array($request->add_ons)) {
+            $addOns = \App\Models\AddonBike::whereIn('id', $request->add_ons)->get();
+            $addOnsTotal += $addOns->sum('price');
+        }
+
+        // Tambahkan biaya add-ons ke harga dasar
+        $basePrice += $addOnsTotal;
+
         // Hitung margin
         $margin = $marginType === 'percentage'
             ? ($basePrice * ($marginValue / 100))
@@ -195,8 +209,9 @@ class OrderController extends Controller
             'final_total'      => $finalTotal,
             'pickup_type' => $request->pickup_type,
             'delivery_fee' => $deliveryFee,
-            'delivery_address' => $request->pickup_type === 'delivery' ? $user->address : null,
+            'delivery_address' => $request->pickup_type === 'delivery' ? $request->delivery_address : $user->renter->address,
             'status' => 'payment_pending',
+            
         ]);
         DB::commit();
         

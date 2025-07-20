@@ -37,10 +37,10 @@ class AddOnResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->label('Add On Name'),
-                TextInput::make('price')
-                    ->required()
-                    ->label('Price')
-                    ->numeric(),
+                // TextInput::make('price')
+                //     ->required()
+                //     ->label('Price')
+                //     ->numeric(),
             ]);
     }
 
@@ -50,13 +50,13 @@ class AddOnResource extends Resource
             ->columns([
                TextColumn::make('name')
                 ->label('Name'),
-                TextColumn::make('price')
-                ->label('Price'),
+                // TextColumn::make('price')
+                // ->label('Price'),
             ])
             ->filters([
                 
             ])
-            ->actions([
+        ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

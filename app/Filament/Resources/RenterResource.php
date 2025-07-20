@@ -53,25 +53,28 @@ class RenterResource extends Resource
                     ->schema([
                         TextInput::make('national_id')->label('NIK / Passport'),
                         TextInput::make('driver_license_number')->label('Driver License Number'),
-                        Select::make('gender')
-                            ->options([
-                                'male' => 'Male',
-                                'female' => 'Female',
-                                'other' => 'Other',
-                            ]),
-                        TextInput::make('ethnicity')->label('Ethnicity'),
-                        TextInput::make('nationality')->label('Nationality'),
+                        // Select::make('gender')
+                        //     ->options([
+                        //         'male' => 'Male',
+                        //         'female' => 'Female',
+                        //         'other' => 'Other',
+                        //     ]),
+                        // TextInput::make('ethnicity')->label('Ethnicity'),
+                        // TextInput::make('nationality')->label('Nationality'),
                         DatePicker::make('birth_date')->label('Birth Date'),
                         Textarea::make('address')->label('Address'),
                         Textarea::make('current_address')->label('Current Address'),
-                        Select::make('marital_status')
-                            ->options([
-                                'single' => 'Single',
-                                'married' => 'Married',
-                                'divorced' => 'Divorced',
-                                'widowed' => 'Widowed',
-                            ]),
-                        TextInput::make('phone')->label('Phone'),
+                        // Select::make('marital_status')
+                        //     ->options([
+                        //         'single' => 'Single',
+                        //         'married' => 'Married',
+                        //         'divorced' => 'Divorced',
+                        //         'widowed' => 'Widowed',
+                        //     ]),
+                        TextInput::make('phone')    
+                            ->label('Phone')
+                            ->required()
+                            ->unique('users', 'phone', ignoreRecord: true),
                     ]),
             ]);
     }
@@ -89,7 +92,7 @@ class RenterResource extends Resource
             TextColumn::make('birth_date')->date()->label('Birth Date'),
             TextColumn::make('address')->label('Address'),
             TextColumn::make('current_address')->label('Current Address'),
-            TextColumn::make('phone')->label('Phone'),
+            TextColumn::make('user.phone')->label('Phone'),
             Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
         ])
         ->filters([

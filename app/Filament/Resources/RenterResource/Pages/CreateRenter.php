@@ -20,6 +20,7 @@ class CreateRenter extends CreateRecord
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
+                'phone' => $data['phone'],
             ]);
 
             $data['user_id'] = $user->id;
@@ -28,6 +29,7 @@ class CreateRenter extends CreateRecord
             unset($data['email']);
             unset($data['password']);
             unset($data['name']);
+            unset($data['phone']);
         } else {
             unset($data['password']);
         }
@@ -39,5 +41,11 @@ class CreateRenter extends CreateRecord
     public function afterSave(): void
     {
         $this->record->renter()->updateOrCreate([], $this->form->getState()['renter'] ?? []);
+    }
+
+    protected function afterCreate(): void
+    {
+        // Redirect ke index daripada ke edit
+        $this->redirect(static::getResource()::getUrl('index'));
     }
 }
