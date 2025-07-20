@@ -3,17 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RenterRequestedResource\Pages;
-use App\Filament\Resources\RenterRequestedResource\RelationManagers;
 use App\Models\Renter;
 use Filament\Tables\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\MediaLibraryPro\Forms\Components\Media as SpatieMediaLibraryImage;
 
 class RenterRequestedResource extends Resource
 {
@@ -34,6 +35,8 @@ class RenterRequestedResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('id')->label('ID'),
                 Tables\Columns\TextColumn::make('user.name')->label('Name'),
                 Tables\Columns\TextColumn::make('user.email')->label('Email'),
                 Tables\Columns\TextColumn::make('user.renter.national_id')->label('NIK / Passport'),
@@ -44,39 +47,16 @@ class RenterRequestedResource extends Resource
                 //
             ])
             ->actions([
-                Action::make('confirm')
-                    ->label('Confirm')
-                    ->button()
+                Action::make('Approve')
+                    ->action(fn(Model $record) => $record->user()->update(['is_requested' => false]))
+                    ->requiresConfirmation()
                     ->color('success')
-                    ->icon('heroicon-o-check')
-                    ->modalHeading('Confirm Renter')
-                    ->modalSubmitActionLabel('Approve')
-                    ->modalCancelActionLabel('Close')
-                    ->form(function (Model $record) {
-                        $user = $record->user;
-
-                        return [
-                            \Filament\Forms\Components\ViewField::make('info')
-                                ->view('filament.renter-confirmation')
-                                ->viewData([
-                                    'renter' => $record,
-                                    'user' => $user,
-                                    'documents' => [
-                                        'national_id_front' => $user->getFirstMediaUrl('national_id_front'),
-                                        'national_id_back' => $user->getFirstMediaUrl('national_id_back'),
-                                        'driving_license_front' => $user->getFirstMediaUrl('driving_license_front'),
-                                        'driving_license_back' => $user->getFirstMediaUrl('driving_license_back'),
-                                        'selfie_with_id' => $user->getFirstMediaUrl('selfie_with_id'),
-                                    ]
-                                ])
-                                ->columnSpanFull(),
-                        ];
-                    })
-                    ->action(function (Model $record) {
-                        $record->user->update(['is_requested' => false]); // or mark as approved, etc.
-                    }),
+                    ->icon('heroicon-o-check'),
+                Action::make('Lihat')
+                    ->url(fn($record) => static::getUrl('view', ['record' => $record]))
+                    ->icon('heroicon-o-eye'),
                 Tables\Actions\EditAction::make(),
-            ])
+            ])->actionsPosition(ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -109,6 +89,7 @@ class RenterRequestedResource extends Resource
         return [
             'index' => Pages\ListRenterRequesteds::route('/'),
             'create' => Pages\CreateRenterRequested::route('/create'),
+            'view' => Pages\ViewRenterRequested::route('/{record}'),
             // 'edit' => Pages\EditRenterRequested::route('/{record}/edit'),
         ];
     }
