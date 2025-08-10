@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BikeController;
+use App\Http\Controllers\Api\V1\JwksController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\StripeController;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/send-otp', [AuthController::class, 'sendOtp']);
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);    
+    Route::get('/jwks', [JwksController::class, 'index']);    
     
     Route::resource('bikes', BikeController::class)
     ->only(['index', 'show', 'store', 'update', 'destroy']);

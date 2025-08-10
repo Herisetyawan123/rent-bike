@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'phone' => '6283853797951',
-                'password' => Hash::make('password'), // ganti password di production
+                'password' => Hash::make('password'), 
             ]
         );
         $admin->assignRole($adminRole);
