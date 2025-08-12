@@ -71,7 +71,7 @@ class AuthController extends Controller
                 'message' => 'User tidak ditemukan',
             ], 404);
         }
-
+        return now()->gt($user->otp_expires_at);
         if (
             !$user->otp ||
             $user->otp !== $request->otp ||
