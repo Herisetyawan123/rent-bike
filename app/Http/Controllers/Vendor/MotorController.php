@@ -20,7 +20,18 @@ class MotorController extends Controller
      */
     public function index()
     {
-        $motors = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->where("user_id", Auth::user()->id)->get();
+        $motors = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->where("user_id", Auth::user()->id)
+        ->where('status', 'accepted')
+        ->get();
+        return view('pages.motor.index', compact('motors'));
+    }
+
+
+    public function indexRequested()
+    {
+        $motors = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])->where("user_id", Auth::user()->id)
+        ->where('status', 'requested')
+        ->get();
         return view('pages.motor.index', compact('motors'));
     }
     
@@ -31,8 +42,8 @@ class MotorController extends Controller
     {
         $motors = Bike::with(['bikeMerk', 'bikeType', 'bikeColor', 'bikeCapacity'])
                         ->where("user_id", Auth::user()->id)
+                        ->where('status', 'requested')
                         ->get();
-
 
         return view('pages.motor.index', compact('motors'));
     }
@@ -87,7 +98,6 @@ class MotorController extends Controller
         $bike->availability_status = 'available';
         $bike->status = 'requested';
         $bike->photo = $photoPath;
-        $bike->status = "accepted";
         $bike->description = $request->description;
         $bike->save();
         if ($request->has('add_on')) {

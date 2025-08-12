@@ -30,6 +30,14 @@
         </a>
         @endcan
 
+        @can('bike.view')
+        <a href="{{ route('admin-vendor.motors.draft') }}"
+            class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.motors.draft') ? 'text-teal-600' : 'hover:text-teal-600' }}">
+            <i class="fad fa-motorcycle text-xs mr-2"></i>
+            Draft Motor
+        </a>
+        @endcan
+
         @can('bike.create')
         <a href="{{ route('admin-vendor.motors.create') }}"
             class="mb-3 capitalize font-medium text-sm transition duration-300 {{ request()->routeIs('admin-vendor.motors.create') ? 'text-teal-600' : 'hover:text-teal-600' }}">

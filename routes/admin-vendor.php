@@ -27,8 +27,8 @@ Route::prefix('admin-vendor')
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Resource routes
-    Route::resource('motors', MotorController::class);
     Route::get('motors/draft', [MotorController::class, 'draft'])->name('motors.draft');
+    Route::resource('motors', MotorController::class);
     Route::get('motors/trash', function() {})->name('motors.trash');
     Route::resource('transactions', TransactionController::class);
     Route::get(
