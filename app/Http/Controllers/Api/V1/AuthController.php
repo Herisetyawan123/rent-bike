@@ -79,7 +79,7 @@ class AuthController extends Controller
         ) {
             return response()->json([
                 'message' => 'OTP tidak valid atau sudah kedaluwarsa',
-                "error" => now()->gt($user->otp_expires_at)
+                "error" => [now()->gt($user->otp_expires_at), $user->otp !== $request->otp, !$user->otp]
             ], 401);
         }
 
